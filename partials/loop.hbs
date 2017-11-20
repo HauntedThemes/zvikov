@@ -1,0 +1,19 @@
+<article class="{{post_class}} container article-container">
+    <div class="row">
+        <div class="col-md-12 post-cover-container">
+            <div class="post-cover post-meta">
+                <time class="post-date" datetime="{{date format="YYYY-MM-DD"}}">{{date format="MMMM Do, YYYY"}}</time>
+                <h1 class="post-title">{{title}}</h1>
+                <div class="author-name text-center">{{author}}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <section class="post-content">
+                {{content}}
+            </section>
+        </div>
+    </div>
+</article>

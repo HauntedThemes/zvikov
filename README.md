@@ -1,2 +1,2 @@
-# zvikov
-Zvikov description
+# haihara
+If you are a busy publisher we are pleased to inform that this theme is a little monster that feeds on content for lunch, supper and dinner. You have been warned...

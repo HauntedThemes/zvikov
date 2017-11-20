@@ -1,0 +1,49 @@
+        <header>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-4 blog-logo-container nopadding">
+                        <a class="blog-logo" href="{{@blog.url}}" title="{{@blog.title}}">
+                            {{#if @blog.logo}} <img src="{{@blog.logo}}" alt="{{@blog.title}}" /> {{else}}{{@blog.title}}{{/if}} 
+                        </a>
+                    </div>
+                    <div class="col-md-8 nopadding text-right">
+                        <form class="search">
+                            <input id="search-field" placeholder="Search" autocomplete="off"/>
+                            <a href="#" class="search-trigger"><i class="fa fa-search" aria-hidden="true"></i></a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="search-results">
+                <div class="container">
+                    <div class="row">
+                        <div class="search-slider loop">
+                            <div class="swiper-container">
+                                <div class="swiper-wrapper" id="results"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-container">
+                <span class="menu-backdrop"></span>
+                <div class="menu-content">
+                    {{navigation}}
+                    <div class="social">
+                        {{#if @blog.facebook}}
+                            <a href="{{facebook_url}}" class="facebook" title="{{@blog.facebook}}" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                        {{/if}}
+                        {{#if @blog.twitter}}
+                            <a href="{{twitter_url}}" class="twitter" title="{{@blog.twitter}}" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                        {{/if}}
+                        <a href="https://www.youtube.com/" class="youtube" title="Youtube" target="_blank"><i class="fa fa-youtube" aria-hidden="true"></i></a>
+                        <a href="https://www.instagram.com/" class="instagram" title="Instagram" target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                        <a href="{{@blog.url}}/rss"><i class="fa fa-rss" aria-hidden="true"></i></a>
+                    </div>
+                    <a href="#" class="nav-trigger">
+                        <i class="fa fa-bars" aria-hidden="true"></i>
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
