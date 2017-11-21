@@ -4,9 +4,15 @@
 {{!-- The main content area --}}
 <main id="content" role="main">
 	<div class="loop">
-		{{#foreach posts}}
-			{{> "loop"}}
-	    {{/foreach}}
+		<div class="swiper-container">
+		    <div class="swiper-wrapper">
+				<div class="swiper-slide">
+					{{#foreach posts}}
+						{{> "loop"}}
+				    {{/foreach}}
+			    </div>
+			</div>
+		</div>
 	</div>
-	{{pagination}}
 </main>
+{{pagination}}
