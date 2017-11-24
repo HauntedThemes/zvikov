@@ -1,27 +1,35 @@
-<article class="{{post_class}} container article-container">
-    <div class="row">
-        <div class="col-md-12 post-cover-container">
-            <time class="post-date" datetime="{{date format="YYYY-MM-DD"}}">{{date format="MMMM Do, YYYY"}}</time>
-            <div class="post-cover post-meta {{#if feature_image}}has-image{{/if}}">
-                <div class="pagination"><b>{{#is "home"}}1{{/is}}</b>/<span class="count-all-posts">{{#get "posts" limit="all"}}{{posts.length}}{{/get}}</span></div>
-                <h1 class="post-title"><a href="{{url}}">{{title}}</a></h1>
-                <div class="author-name text-center">{{author}}</div>
-                {{#if feature_image}}
-                <div class="cloned-content">
-                    <div class="img-holder" style="background-image: url({{img_url feature_image}})"></div>
-                    <span class="post-title"><a href="{{url}}">{{title}}</a></span>
-                    <span class="author-name text-center">{{author}}</span>
+<div class="swiper-slide" data-history="{{slug}}">
+    <article class="{{post_class}} container article-container">
+        <div class="row">
+            <div class="col-md-12 post-cover-container">
+                <time class="post-date" datetime="{{date format="YYYY-MM-DD"}}">{{date format="MMMM Do, YYYY"}}</time>
+                <div class="post-cover post-meta {{#if feature_image}}has-image{{/if}}">
+                    <div class="pagination-number">
+                        <b>{{#is "home"}}1{{/is}}</b>/<span class="count-all-posts">{{#get "posts" limit="all"}}{{posts.length}}{{/get}}</span>
+                    </div>
+                    <h1 class="post-title"><a href="{{url}}">{{title}}</a></h1>
+                    <div class="author-name text-center">{{author}}</div>
+                    {{#if feature_image}}
+                    <div class="cloned-content">
+                        <div class="img-holder" style="background-image: url({{img_url feature_image}})"></div>
+                        <div class="pagination-number">
+                            <b>{{#is "home"}}1{{/is}}</b>/<span class="count-all-posts">{{#get "posts" limit="all"}}{{posts.length}}{{/get}}</span>
+                        </div>
+                        <span class="post-title"><a href="{{url}}">{{title}}</a></span>
+                        <span class="author-name text-center">{{author}}</span>
+                    </div>
+                    {{/if}}
                 </div>
-                {{/if}}
             </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-lg-8 offset-lg-2">
-            <section class="post-content">
-                {{content}}
-            </section>
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <section class="post-content">
+                    <!-- <div class="progress"><i class="fa fa-clock-o" aria-hidden="true"></i> {{reading_time}}</div> -->
+                    {{content}}
+                </section>
+            </div>
         </div>
-    </div>
-</article>
+    </article>
+</div>

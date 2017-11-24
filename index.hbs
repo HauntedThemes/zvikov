@@ -8,11 +8,9 @@
 			<div class="next"><a href="#"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></a></div>
     		<div class="prev"><a href="#"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></a></div>
 		    <div class="swiper-wrapper">
-				<div class="swiper-slide">
-					{{#foreach posts}}
-						{{> "loop"}}
-				    {{/foreach}}
-			    </div>
+				{{#foreach posts}}
+					{{> "loop"}}
+			    {{/foreach}}
 			</div>
 		</div>
 	</div>

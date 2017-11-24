@@ -275,6 +275,11 @@ li{
     z-index: 1;
 }
 
+.article-container .post-meta .cloned-content .pagination-number{
+    color: #fff;
+    z-index: 2;
+}
+
 .article-container .post-meta .cloned-content .img-holder{
     position: absolute;
     top: 0;
@@ -366,4 +371,33 @@ li{
     z-index: 2;
     background: #fff;
     border-radius: 3px 3px 0 0;
+}
+
+.post-content .progress{
+    display: inline-block;
+    z-index: 2;
+    height: auto;
+    background: transparent;
+    position: absolute;
+    top: 50px;
+    left: -115px;
+    font-weight: 300;
+    overflow: visible;
+    font-size: 15px;
+    font-family: "roboto-mono", "Roboto Mono", sans-serif;
+}
+
+.post-content .progress i{
+    color: #5FCCC4;
+    margin-right: 5px;
+}
+
+.pagination-number{
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    color: #E83030;
+    font-family: "roboto-mono", "Roboto Mono", sans-serif;
+    font-size: 15px;
+    line-height: 20px;
 }
