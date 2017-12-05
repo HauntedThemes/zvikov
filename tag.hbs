@@ -1,54 +1,19 @@
 {{!-- The tag below means - insert everything in this file into the {body} of the default.hbs template --}}
 {{!< default}}
 
+{{tag.name}}
+
 {{!-- The main content area --}}
 <main id="content" role="main">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-12">
-				<h1 class="name">{{tag.name}}</h1>
+	<div class="loop">
+		<div class="swiper-container">
+			<div class="next"><a href="#"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></a></div>
+    		<div class="prev"><a href="#"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></a></div>
+		    <div class="swiper-wrapper">
+				{{#foreach posts}}
+					{{> "loop"}}
+			    {{/foreach}}
 			</div>
 		</div>
 	</div>
-
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-8">
-				{{#if posts}}
-					<div class="loop-medium">
-						{{#foreach posts}}
-			    			{{> "loop-medium"}}
-					    {{/foreach}}
-					</div>
-					{{pagination}}
-				{{else}}
-					<h2>There are no posts in {{tag.name}}.</h2>
-                    <div class="related-posts">
-                        {{#get "posts" limit="1" include="tags" filter="tag:-{{tag.slug}}"}}
-                            <h3 class="title">You might like something else</h3>
-                            <div class="row loop-big">
-                                <div class="col-md-12">
-                                    {{#foreach posts}}
-                                        {{> "loop-big"}}
-                                    {{/foreach}}
-                                </div>
-                            </div>
-                        {{/get}}
-                        {{#get "posts" limit="7" include="tags" filter="tag:-{{tag.slug}}"}}
-                            <div class="row loop-small">
-                                {{#foreach posts}}
-                                    {{^if @first}}
-                                    <div class="col-md-4">
-                                        {{> "loop-small"}}
-                                    </div>
-                                    {{/if}}
-                                {{/foreach}}
-                            </div>
-                        {{/get}}
-                    </div>
-				{{/if}}
-			</div>
-		</div>
-	</div>
-
 </main>

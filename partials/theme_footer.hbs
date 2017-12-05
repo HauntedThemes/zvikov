@@ -18,24 +18,13 @@
                             {{/get}}
                         </div>
                         <div class="col-md-6">
-                            <h3>Social</h3>
+                            <h3>Newsletter</h3>
                             {{subscribe_form
                                 form_class="gh-signin"
                                 input_class="gh-input"
-                                button_class="btn"
+                                button_class="btn fa fa-long-arrow-right"
                                 placeholder="Your email address"
                             }}
-                            <div class="social">
-                                {{#if @blog.facebook}}
-                                    <a href="{{facebook_url}}" class="facebook" title="{{@blog.facebook}}" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                                {{/if}}
-                                {{#if @blog.twitter}}
-                                    <a href="{{twitter_url}}" class="twitter" title="{{@blog.twitter}}" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                                {{/if}}
-                                <a href="https://www.youtube.com/" class="youtube" title="Youtube" target="_blank"><i class="fa fa-youtube" aria-hidden="true"></i></a>
-                                <a href="https://www.instagram.com/" class="instagram" title="Instagram" target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-                                <a href="{{@blog.url}}/rss"><i class="fa fa-rss" aria-hidden="true"></i></a>
-                            </div>
                         </div>
                     </div>
                     <div class="row">
