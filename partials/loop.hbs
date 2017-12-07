@@ -1,5 +1,5 @@
 <div class="swiper-slide" data-history="{{slug}}">
-    <article class="{{post_class}} container article-container" data-id={{comment_id}}>
+    <article class="{{post_class}} container article-container" data-id="{{comment_id}}">
         <div class="row">
             <div class="col-md-12 post-cover-container">
                 <time class="post-date" datetime="{{date format="YYYY-MM-DD"}}">{{date format="MMMM Do, YYYY"}}</time>
@@ -7,7 +7,7 @@
                     <div class="pagination-number"></div>
                     <h1 class="post-title"><a href="{{url}}">{{title}}</a></h1>
                     <div class="author-name text-center">{{author}}</div>
-                    <a href="#" class="read-later"></a>
+                    <a href="#" class="read-later" data-id="{{comment_id}}"></a>
                     {{#if feature_image}}
                     <div class="cloned-content">
                         <div class="img-holder" style="background-image: url({{img_url feature_image}})"></div>

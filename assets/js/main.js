@@ -225,25 +225,28 @@ jQuery(document).ready(function($) {
 
 	function readLater(content, readLaterPosts){
 
+		console.log(readLaterPosts);
+
 		$(content).find('.read-later').each(function(index, el) {
 			$(this).on('click', function(event) {
 				event.preventDefault();
-				var id = $(this).closest('.article-container').attr('data-id');
-				console.log(id);
+				var id = $(this).attr('data-id');
 				if ($(this).hasClass('active')) {
 					removeValue(readLaterPosts, id);
 				}else{
 					readLaterPosts.push(id);
 				};
-				$(this).toggleClass('active');
+				$('.read-later[data-id="'+ id +'"]').each(function(index, el) {
+					$(this).toggleClass('active');
+				});
 				Cookies.set('zvikov-read-later', readLaterPosts);
 			});
 		});
-		
+
 		if (typeof Cookies.get('zvikov-read-later') !== "undefined") {
 			readLaterPosts = JSON.parse(Cookies.get('zvikov-read-later'));
 			$.each(readLaterPosts, function(index, val) {
-				$('.loop .swiper-slide .article-container[data-id="'+ val +'"] .read-later').addClass('active');
+				$('.read-later[data-id="'+ val +'"]').addClass('active');
 			});
 		}
 
@@ -251,9 +254,11 @@ jQuery(document).ready(function($) {
 
 	}
 
-	readLaterPosts = readLater($('#content .loop .swiper-slide'), readLaterPosts);
+	if (typeof Cookies.get('zvikov-read-later') !== "undefined") {
+		readLaterPosts = JSON.parse(Cookies.get('zvikov-read-later'));
+	}
 
-	console.log(readLaterPosts);
+	readLaterPosts = readLater($('#content .loop .swiper-slide'), readLaterPosts);
 
 	function removeValue(arr) {
 	    var what, a = arguments, L = a.length, ax;
@@ -265,6 +270,49 @@ jQuery(document).ready(function($) {
 	    }
 	    return arr;
 	}
+
+    // Initialize ghostHunter - A Ghost blog search engine
+    var searchField = $("#search-field").ghostHunter({
+        results             : "#results",
+        onKeyUp             : true,
+        zeroResultsInfo     : true,
+        displaySearchInfo   : false,
+        // info_template       : "<h3 class='title'>Number of posts found: {{amount}}</h3>",
+        // result_template     : "<li class='swiper-slide'><article class='post post-card post-card-small'><div class='content'><div class='content-holder'><time class='post-date' datetime='{{pubDate}}'>{{pubDate}}</time><h3 class='post-title'><a href='{{link}}' title='{{title}}'>{{title}}</a></h3></div></div></article></li>",
+        onComplete      : function( results ){
+
+        	$('#results').empty();
+
+        	var tags = [];
+        	$.each(results, function(index, val) {
+        		if (val.tags.length) {
+        			if ($.inArray(val.tags[0].name, tags) === -1) {
+        				tags.push(val.tags[0].name);
+        			};
+        		}else{
+        			if ($.inArray('Other', tags) === -1) {
+        				tags.push('Other');
+        			};
+        		};
+        	});
+        	tags.sort();
+
+        	$.each(tags, function(index, val) {
+        		$('#results').append('<h5>'+ val +'</h5><ul data-tag="'+ val +'" class="list-box"</ul>');
+        	});
+
+        	$.each(results, function(index, val) {
+        		if (val.tags.length) {
+	        		$('#results ul[data-tag="'+ val.tags[0].name +'"]').append('<li><time>'+ val.pubDate +'</time><a href="#" class="read-later" data-id="'+ val.comment_id +'"></a><a href="'+ val.link +'">'+ val.title +'</a></li>');
+        		}else{
+        			$('#results ul[data-tag="Other"]').append('<li><a href="#" class="read-later" data-id="'+ val.comment_id +'"></a><time>'+ val.pubDate +'</time><a href="'+ val.link +'">'+ val.title +'</a></li>');
+        		};
+        	});
+
+        	readLaterPosts = readLater($('#results'), readLaterPosts);
+
+        }
+    });
 
     // Progress bar for inner post
     // function progressBar(){

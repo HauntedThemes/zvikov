@@ -1,49 +1,105 @@
         <header>
-            <div class="container-fluid">
+            <div class="container">
                 <div class="row">
-                    <div class="col-md-4 blog-logo-container nopadding">
+                    <div class="col-md-6 ml-auto text-center">
                         <a class="blog-logo" href="{{@blog.url}}" title="{{@blog.title}}">
                             {{#if @blog.logo}} <img src="{{@blog.logo}}" alt="{{@blog.title}}" /> {{else}}{{@blog.title}}{{/if}} 
                         </a>
                     </div>
-                    <div class="col-md-8 nopadding text-right">
-                        <form class="search">
-                            <input id="search-field" placeholder="Search" autocomplete="off"/>
-                            <a href="#" class="search-trigger"><i class="fa fa-search" aria-hidden="true"></i></a>
-                        </form>
+                    <div class="col-md-3 text-right btns">
+                        <a href="#" class="search" data-toggle="modal" data-target="#search">
+                            <svg width="25" height="25" viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg"><path d="M1.29775 9.197c0-4.52 3.677-8.197 8.196-8.197 4.52 0 8.198 3.677 8.198 8.197s-3.678 8.197-8.198 8.197c-4.519 0-8.196-3.677-8.196-8.197zm15.033 6.13c1.462-1.629 2.361-3.774 2.361-6.13 0-5.071-4.126-9.197-9.198-9.197-5.071 0-9.196 4.126-9.196 9.197 0 5.071 4.125 9.197 9.196 9.197 2.356 0 4.501-.898 6.13-2.36l8.523 8.522c.097.098.225.146.353.146.128 0 .256-.048.354-.146.195-.195.195-.512 0-.707l-8.523-8.522z" fill="#B9B2A2" fill-rule="evenodd"/></svg>
+                        </a>
+                        <a href="#" class="bookmark">
+                            <svg width="19" height="27" viewBox="0 0 19 27" xmlns="http://www.w3.org/2000/svg"><path d="M17.9866667 25.4668794L9.81008 19.1772018c-.0912-.0697169-.2016533-.1050806-.31008-.1050806-.1084267 0-.21888.0353637-.31008.1050806l-8.1765867 6.2896776V1.01038998h16.9733334V25.4668794zM18.4933333 0H.5066667C.2269867 0 0 .22632736 0 .505195v25.989251c0 .1929845.10944.3687923.28272.4536651.1753067.0848728.3789867.064665.5340267-.0535507L9.5 20.2158827l8.6832533 6.6786777c.0912.0697169.20064.1050806.31008.1050806.076 0 .152-.0171766.2239467-.0515299.17328-.0848728.28272-.2606806.28272-.4536651V.505195C19 .22632735 18.7730133 0 18.4933333 0z" fill="#B9B2A2" fill-rule="evenodd"/></svg>
+                        </a>
+                        <a href="#" class="menu" data-toggle="modal" data-target="#menu">
+                            <svg width="29" height="21" viewBox="0 0 29 21" xmlns="http://www.w3.org/2000/svg"><path d="M.5 1C.224 1 0 .776 0 .5S.224 0 .5 0h27.874c.276 0 .5.224.5.5s-.224.5-.5.5H.5zm27.874 9c.276 0 .5.224.5.5s-.224.5-.5.5H.5c-.276 0-.5-.224-.5-.5s.224-.5.5-.5h27.874zm0 10c.276 0 .5.224.5.5s-.224.5-.5.5H.5c-.276 0-.5-.224-.5-.5s.224-.5.5-.5h27.874z" fill="#B9B2A2" fill-rule="evenodd"/></svg>
+                        </a>
                     </div>
                 </div>
-            </div>
-            <div class="search-results">
-                <div class="container">
-                    <div class="row">
-                        <div class="search-slider loop">
-                            <div class="swiper-container">
-                                <div class="swiper-wrapper" id="results"></div>
+            </div>           
+
+            <!-- Search Modal -->
+            <div class="modal fade-scale" id="search" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-6 ml-auto text-center">
+                                        <a class="blog-logo" href="{{@blog.url}}" title="{{@blog.title}}">
+                                            {{#if @blog.logo}} <img src="{{@blog.logo}}" alt="{{@blog.title}}" /> {{else}}{{@blog.title}}{{/if}} 
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 text-right btns">
+                                        <a href="#" data-dismiss="modal" aria-label="Close">
+                                            <svg width="23" height="21" viewBox="0 0 23 21" xmlns="http://www.w3.org/2000/svg"><g stroke="#B9B2A2" fill="none" fill-rule="evenodd" stroke-linecap="square"><path d="M21.4473684.55263158L1.17249143 20.8275086M1.5526316.55263158L21.82750857 20.8275086"/></g></svg>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <form class="search">
+                                            <input id="search-field" placeholder="Search" autocomplete="off"/>
+                                        </form>
+                                        <div id="results"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer"></div>
                     </div>
                 </div>
             </div>
-            <div class="menu-container">
-                <span class="menu-backdrop"></span>
-                <div class="menu-content">
-                    {{navigation}}
-                    <div class="social">
-                        {{#if @blog.facebook}}
-                            <a href="{{facebook_url}}" class="facebook" title="{{@blog.facebook}}" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                        {{/if}}
-                        {{#if @blog.twitter}}
-                            <a href="{{twitter_url}}" class="twitter" title="{{@blog.twitter}}" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                        {{/if}}
-                        <a href="https://www.youtube.com/" class="youtube" title="Youtube" target="_blank"><i class="fa fa-youtube" aria-hidden="true"></i></a>
-                        <a href="https://www.instagram.com/" class="instagram" title="Instagram" target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-                        <a href="{{@blog.url}}/rss"><i class="fa fa-rss" aria-hidden="true"></i></a>
+
+            <!-- Menu Modal -->
+            <div class="modal fade-scale" id="menu" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-6 ml-auto text-center">
+                                        <a class="blog-logo" href="{{@blog.url}}" title="{{@blog.title}}">
+                                            {{#if @blog.logo}} <img src="{{@blog.logo}}" alt="{{@blog.title}}" /> {{else}}{{@blog.title}}{{/if}} 
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 text-right btns">
+                                        <a href="#" data-dismiss="modal" aria-label="Close">
+                                            <svg width="23" height="21" viewBox="0 0 23 21" xmlns="http://www.w3.org/2000/svg"><g stroke="#B9B2A2" fill="none" fill-rule="evenodd" stroke-linecap="square"><path d="M21.4473684.55263158L1.17249143 20.8275086M1.5526316.55263158L21.82750857 20.8275086"/></g></svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {{navigation}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <ul class="social">
+                                {{#if @blog.facebook}}
+                                    <li><a href="{{facebook_url}}" class="facebook" title="{{@blog.facebook}}" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                                {{/if}}
+                                {{#if @blog.twitter}}
+                                    <li><a href="{{twitter_url}}" class="twitter" title="{{@blog.twitter}}" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                                {{/if}}
+                                <li><a href="https://www.youtube.com/" class="youtube" title="Youtube" target="_blank"><i class="fa fa-youtube" aria-hidden="true"></i></a></li>
+                                <li><a href="https://www.instagram.com/" class="instagram" title="Instagram" target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+                                <li><a href="{{@blog.url}}/rss"><i class="fa fa-rss" aria-hidden="true"></i></a></li>
+                            </ul>
+                        </div>
                     </div>
-                    <a href="#" class="nav-trigger">
-                        <i class="fa fa-bars" aria-hidden="true"></i>
-                        <i class="fa fa-times" aria-hidden="true"></i>
-                    </a>
                 </div>
             </div>
         </header>

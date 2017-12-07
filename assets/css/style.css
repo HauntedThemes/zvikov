@@ -653,7 +653,7 @@ input{
     background: transparent;
 }
 
-.loop .read-later{
+.read-later{
     position: absolute;
     top: 20px;
     left: 20px;
@@ -663,7 +663,7 @@ input{
     border-radius: 50%;
 }
 
-.loop .read-later.active{
+.read-later.active{
     background: #5FCCC4;
 }
 
@@ -710,4 +710,242 @@ footer .copyright{
 
 .gh-signin .btn span{
     display: none;
+}
+
+.modal-backdrop.show{
+    opacity: 0;
+}
+
+.fade-scale {
+    opacity: 0;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+.fade-scale.show {
+    opacity: 1;
+}
+
+.modal{
+    padding-right: 0 !important;
+}
+
+.modal .modal-content{
+    border: none;
+    background-color: rgba(242, 242, 242, .98);
+}
+
+.modal .modal-dialog{
+    max-width: 100%;
+    margin: 0;
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.modal .modal-dialog .modal-content{
+    width: 100%;
+    border-radius: 0;
+}
+
+header,
+.modal-header{
+    min-height: 150px;
+    flex-direction: column;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    border: none;
+}
+
+header .blog-logo{
+    color: #333333;
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 26px;
+    padding: 25px;
+}
+
+header .modal .blog-logo{
+    color: #AAA391;
+}
+
+header .btns{
+    font-size: 24px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding-right: 0;
+}
+
+header .btns a{
+    color: #B9B2A2;
+    margin: 0 20px;
+}
+
+header .btns a svg{
+    display: block;
+}
+
+header .btns a svg path{
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+header .btns a:hover svg path{
+    fill: #E83030;
+}
+
+header .btns a:last-child{
+    margin-right: 0;
+}
+
+header nav ul{
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    width: 100%;
+}
+
+header nav ul li{
+    border-bottom: 1px solid rgba(185, 178, 162, 0.15);
+}
+
+header nav ul li:last-child{
+    border: none;
+}
+
+header nav ul li a{
+    color: #262626;
+    font-size: 15px;
+    font-family: "roboto-mono", "Roboto Mono", sans-serif;
+    letter-spacing: 5px;
+    line-height: 20px;
+    font-weight: normal;
+    text-transform: uppercase;
+    padding: 25px;
+    display: inline-block;
+}
+
+header nav ul li a:hover{
+    color: #E83030;
+}
+
+header .modal-footer{
+    border: none;
+    justify-content: center;
+    min-height: 150px;
+}
+
+header #search-field{
+    border: 1px solid #B9B2A2;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+    color: #262626;
+    font-size: 15px;
+    line-height: 20px;
+    font-family: "roboto-mono", "Roboto Mono", sans-serif;
+}
+
+header #search-field:focus{
+    outline: 0;
+}
+
+.modal-open .modal{
+    overflow-y: scroll;
+}
+
+.modal .col-md-12{
+    padding: 0;
+}
+
+.modal .modal-body{
+    padding: 0;
+}
+
+#menu .modal-body{
+    display: flex;
+    align-items: center;
+}
+
+.social{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.social li{
+    display: inline-block;
+}
+
+.social li a{
+    color: #AAA391;
+    margin: 0 5px;
+    padding: 5px;
+}
+
+.social li a:hover{
+    color: #E83030;
+}
+
+.list-box{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.list-box li{
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    box-shadow: 0 0 8px 0 rgba(200,195,183,0.3);
+    padding: 15px 20px 15px 58px;
+    width: calc(50% - 5px);
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.list-box li time{
+    color: #51C3B7;
+    font-size: 15px;
+    line-height: 27px;
+    font-family: "roboto-mono", "Roboto Mono", sans-serif;
+    display: block;
+    font-weight: normal;
+}
+
+.list-box li a{
+    color: #262626;
+    font-size: 19px;
+    letter-spacing: -1px;
+    line-height: 25px;
+    font-family: "roboto-mono", "Roboto Mono", sans-serif;
+    font-weight: normal;
+}
+
+.list-box li a:hover{
+    color: #E83030;
+}
+
+header h5{
+    margin-top: 60px;
+    color: #AAA391;
+    font-size: 15px;
+    line-height: 20px;
+    text-transform: uppercase;
+    font-weight: normal;
+    margin-bottom: 10px;
+}
+
+header h5:before{
+    content: '#';
 }
