@@ -78,7 +78,7 @@ jQuery(document).ready(function($) {
 			maxPages = countAllPosts;
 
 			$.each(data.posts, function(index, val) {
-				if (val.comment_id == firstPostId) {
+				if (val.id == firstPostId) {
 					firstPostIndex = index+1;
 					$('.pagination-number').append('<b>'+ firstPostIndex +'</b>/' + countAllPosts);
 				};
@@ -86,7 +86,7 @@ jQuery(document).ready(function($) {
 
 			if ($('body').hasClass('post-template')) {
 				$.each(allPosts, function(index, val) {
-					if (val.comment_id == $('.loop .swiper-slide:last-child .article-container').attr('data-id')) {
+					if (val.id == $('.loop .swiper-slide:last-child .article-container').attr('data-id')) {
 						currentPageNext = index;
 						currentPagePrev = index;
 					};
@@ -127,7 +127,7 @@ jQuery(document).ready(function($) {
 
 			if ($('body').hasClass('post-template')) {
 				$.each(allPosts, function(index, val) {
-					if (val.comment_id == $('.loop .swiper-slide:last-child .article-container').attr('data-id')) {
+					if (val.id == $('.loop .swiper-slide:last-child .article-container').attr('data-id')) {
 						nextPage = '/' + allPosts[currentPageNext].slug;
 					};
 				});
@@ -168,7 +168,7 @@ jQuery(document).ready(function($) {
 
 			if ($('body').hasClass('post-template')) {
 				$.each(allPosts, function(index, val) {
-					if (val.comment_id == $('.loop .swiper-slide:first-child .article-container').attr('data-id')) {
+					if (val.id == $('.loop .swiper-slide:first-child .article-container').attr('data-id')) {
 						prevPage = '/' + allPosts[currentPagePrev].slug;
 					};
 				});
@@ -221,12 +221,23 @@ jQuery(document).ready(function($) {
 		offset_top: 225,
 	});
 
+	function prettyDate(date) {
+		var d = new Date(date);
+		var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+			return d.getDate() + ' ' + monthNames[d.getMonth()] + ' ' + d.getFullYear();
+	};
+
 	var readLaterPosts = [];
 
 	function readLater(content, readLaterPosts){
 
-		console.log(readLaterPosts);
-
+		if (typeof Cookies.get('zvikov-read-later') !== "undefined") {
+			$.each(readLaterPosts, function(index, val) {
+				$('.read-later[data-id="'+ val +'"]').addClass('active');
+			});
+			bookmarks(readLaterPosts);
+		}
+		
 		$(content).find('.read-later').each(function(index, el) {
 			$(this).on('click', function(event) {
 				event.preventDefault();
@@ -239,18 +250,56 @@ jQuery(document).ready(function($) {
 				$('.read-later[data-id="'+ id +'"]').each(function(index, el) {
 					$(this).toggleClass('active');
 				});
-				Cookies.set('zvikov-read-later', readLaterPosts);
+				Cookies.set('zvikov-read-later', readLaterPosts, { expires: 365 });
+				bookmarks(readLaterPosts);
 			});
 		});
 
-		if (typeof Cookies.get('zvikov-read-later') !== "undefined") {
-			readLaterPosts = JSON.parse(Cookies.get('zvikov-read-later'));
-			$.each(readLaterPosts, function(index, val) {
-				$('.read-later[data-id="'+ val +'"]').addClass('active');
-			});
-		}
-
 		return readLaterPosts;
+
+	}
+
+	function bookmarks(readLaterPosts){
+
+		$('.bookmark-container').empty();
+		if (readLaterPosts.length) {
+			$('header .counter').removeClass('d-none').text(readLaterPosts.length);
+			var filter = readLaterPosts.toString();
+			filter = "id:["+filter+"]";
+
+			$.get(ghost.url.api('posts', {filter:filter, include:"tags"})).done(function (data){
+				$('.bookmark-container').empty();
+				var tags = [];
+	        	$.each(data.posts, function(index, val) {
+	        		if (val.tags.length) {
+	        			if ($.inArray(val.tags[0].name, tags) === -1) {
+	        				tags.push(val.tags[0].name);
+	        			};
+	        		}else{
+	        			if ($.inArray('Other', tags) === -1) {
+	        				tags.push('Other');
+	        			};
+	        		};
+	        	});
+	        	tags.sort();
+
+	        	$.each(tags, function(index, val) {
+	        		$('.bookmark-container').append('<h5>'+ val +'</h5><ul data-tag="'+ val +'" class="list-box"</ul>');
+	        	});
+
+	        	$.each(data.posts, function(index, val) {
+	        		if (val.tags.length) {
+		        		$('.bookmark-container ul[data-tag="'+ val.tags[0].name +'"]').append('<li><time>'+ prettyDate(val.created_at) +'</time><a href="#" class="read-later" data-id="'+ val.id +'"></a><a href="'+ val.link +'">'+ val.title +'</a></li>');
+	        		}else{
+	        			$('.bookmark-container ul[data-tag="Other"]').append('<li><a href="#" class="read-later" data-id="'+ val.id +'"></a><time>'+ prettyDate(val.created_at) +'</time><a href="'+ val.link +'">'+ val.title +'</a></li>');
+	        		};
+	        	});
+
+			});
+		}else{
+			$('header .counter').addClass('d-none');
+			$('.bookmark-container').append('<p class="no-bookmarks">You haven\'t yet saved any bookmarks. To bookmark a post, just click <i class="circle"></i>.</p>')
+		};
 
 	}
 
@@ -303,9 +352,9 @@ jQuery(document).ready(function($) {
 
         	$.each(results, function(index, val) {
         		if (val.tags.length) {
-	        		$('#results ul[data-tag="'+ val.tags[0].name +'"]').append('<li><time>'+ val.pubDate +'</time><a href="#" class="read-later" data-id="'+ val.comment_id +'"></a><a href="'+ val.link +'">'+ val.title +'</a></li>');
+	        		$('#results ul[data-tag="'+ val.tags[0].name +'"]').append('<li><time>'+ val.pubDate +'</time><a href="#" class="read-later" data-id="'+ val.id +'"></a><a href="'+ val.link +'">'+ val.title +'</a></li>');
         		}else{
-        			$('#results ul[data-tag="Other"]').append('<li><a href="#" class="read-later" data-id="'+ val.comment_id +'"></a><time>'+ val.pubDate +'</time><a href="'+ val.link +'">'+ val.title +'</a></li>');
+        			$('#results ul[data-tag="Other"]').append('<li><a href="#" class="read-later" data-id="'+ val.id +'"></a><time>'+ val.pubDate +'</time><a href="'+ val.link +'">'+ val.title +'</a></li>');
         		};
         	});
 

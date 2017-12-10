@@ -658,12 +658,29 @@ input{
     top: 20px;
     left: 20px;
     border: 1px solid #5FCCC4;
-    width: 17px;
-    height: 17px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
 }
 
-.read-later.active{
+.read-later:before{
+    content: '';
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -5px;
+    margin-top: -5px;
+    border-radius: 50%;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+.read-later.active:before{
     background: #5FCCC4;
 }
 
@@ -732,6 +749,19 @@ footer .copyright{
     padding-right: 0 !important;
 }
 
+.modal h3{
+    font-size: 15px;
+    letter-spacing: 5px;
+    color: #262626;
+    line-height: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    padding: 25px;
+    border-bottom: 1px solid rgba(185, 178, 162, 0.15);
+    margin: 0;
+    font-weight: normal;
+}
+
 .modal .modal-content{
     border: none;
     background-color: rgba(242, 242, 242, .98);
@@ -783,6 +813,22 @@ header .btns{
 header .btns a{
     color: #B9B2A2;
     margin: 0 20px;
+    position: relative;
+}
+
+header .btns a .counter{
+    position: absolute;
+    top: -6px;
+    left: -7px;
+    font-size: 10px;
+    background: #E83030;
+    font-family: "roboto-mono", "Roboto Mono", sans-serif;
+    color: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
 }
 
 header .btns a svg{
@@ -948,4 +994,19 @@ header h5{
 
 header h5:before{
     content: '#';
+}
+
+.bookmark-container .no-bookmarks{
+    font-size: 17px;
+    text-align: center;
+    margin: 100px;
+}
+
+.bookmark-container .no-bookmarks .circle{
+    border: 1px solid #5FCCC4;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 2px -2px 2px;
 }
