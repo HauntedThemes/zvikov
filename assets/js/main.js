@@ -12,16 +12,28 @@ jQuery(document).ready(function($) {
         h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
         activeSlide;
 
-    // var countAllPosts = $('.count-all-posts').text();
+	$('#content .loop .swiper-slide').addClass('first');
 
     hoverTitle();
 
     function hoverTitle(){
 	    $('.cloned-content .post-title').on('mouseover', function(event) {
-	    	$(this).parent().addClass('active');
+    		$(this).parent().addClass('active');
 	    }).on('mouseleave', function(event) {
 	    	$(this).parent().removeClass('active');
 	    });
+    }
+
+    imageInDiv();
+
+    function imageInDiv(){
+    	$('.swiper-slide:not(.swiper-slide-active) .article-container .post-content img').each(function(index, el) {
+    		if (!$(this).parent().hasClass('img-holder') && !$(this).parent().parent().hasClass('img-holder')) {
+    			$(this).parent().addClass('img-holder');
+    			$(this).parent().append('<span></span>');
+    			$(this).appendTo($(this).parent().find('span'));
+    		};
+    	});
     }
 
 	$(window).on('load', function(event) {
@@ -41,7 +53,9 @@ jQuery(document).ready(function($) {
 	      	// },
 		});
 
-		$('#content .loop .swiper-slide').addClass('first');
+		swiperPosts.on('slideChangeTransitionEnd', function(event) {
+			$('.swiper-wrapper').height($('.swiper-slide-active').height());
+		});
 
 		var currentPageNext = 1;
 		var currentPagePrev = 1;
@@ -62,7 +76,7 @@ jQuery(document).ready(function($) {
 
 		var countAllPosts;
 		var filter = "";
-		var firstPostId = $('.article-container').attr('data-id');
+		var firstPostId = $('.article-container .read-later').attr('data-id');
 		var firstPostIndex = 0;
 		var allPosts;
 		if ($('body').hasClass('tag-template')) {
@@ -86,7 +100,7 @@ jQuery(document).ready(function($) {
 
 			if ($('body').hasClass('post-template')) {
 				$.each(allPosts, function(index, val) {
-					if (val.id == $('.loop .swiper-slide:last-child .article-container').attr('data-id')) {
+					if (val.id == $('.loop .swiper-slide:last-child .article-container .read-later').attr('data-id')) {
 						currentPageNext = index;
 						currentPagePrev = index;
 					};
@@ -101,7 +115,7 @@ jQuery(document).ready(function($) {
 			swiperPosts.on('slideChange', function(event) {
 				activeSlide = swiperPosts.activeIndex;
 				$('.loop .swiper-slide.first').removeClass('first').addClass('loaded');
-				if (swiperPosts.activeIndex > (swiperPosts.slides.length - 2)) {
+				if (swiperPosts.activeIndex > (swiperPosts.slides.length - 3)) {
 					loadNextPost( maxPages, nextPage, allPosts);
 				}else if(swiperPosts.activeIndex == 1){
 					setTimeout(function() {
@@ -126,8 +140,13 @@ jQuery(document).ready(function($) {
         	nextPage = pathname + 'page/' + currentPageNext + '/';
 
 			if ($('body').hasClass('post-template')) {
+				console.log(currentPageNext);
+				console.log(allPosts.length - 1);
+				if (currentPageNext > (allPosts.length - 1)) {
+					return;
+				};
 				$.each(allPosts, function(index, val) {
-					if (val.id == $('.loop .swiper-slide:last-child .article-container').attr('data-id')) {
+					if (val.id == $('.loop .swiper-slide:last-child .article-container .read-later').attr('data-id')) {
 						nextPage = '/' + allPosts[currentPageNext].slug;
 					};
 				});
@@ -143,6 +162,7 @@ jQuery(document).ready(function($) {
 	        	content.find('#content .loop .swiper-slide').addClass('loaded').removeClass('first');
 	            swiperPosts.appendSlide(content.find('#content .loop .swiper-slide'));
 		    	hoverTitle();
+		    	imageInDiv();
 
 		    	if (!$('.loop .next a, .loop .prev a').hasClass('active')) {
 		    		$('.loop .next a, .loop .prev a').addClass('active');
@@ -155,10 +175,10 @@ jQuery(document).ready(function($) {
 		}
 
 		function loadPrevPost(maxPages, prevPage, allPosts){
+
 			if (currentPagePrev < 1) {
 				return;
 			};
-
 			currentPagePrev--;
 
 			if ($('body').hasClass('paged')) {
@@ -168,7 +188,7 @@ jQuery(document).ready(function($) {
 
 			if ($('body').hasClass('post-template')) {
 				$.each(allPosts, function(index, val) {
-					if (val.id == $('.loop .swiper-slide:first-child .article-container').attr('data-id')) {
+					if (val.id == $('.loop .swiper-slide:first-child .article-container .read-later').attr('data-id')) {
 						prevPage = '/' + allPosts[currentPagePrev].slug;
 					};
 				});
@@ -183,6 +203,7 @@ jQuery(document).ready(function($) {
 	            content.find('#content .loop .swiper-slide').addClass('loaded').removeClass('first');
 	            swiperPosts.prependSlide($(content).find('#content .loop .swiper-slide'));
 		    	hoverTitle();
+		    	imageInDiv();
 
 		    	if (!$('.loop .next a, .loop .prev a').hasClass('active')) {
 		    		$('.loop .next a, .loop .prev a').addClass('active');
@@ -289,11 +310,28 @@ jQuery(document).ready(function($) {
 
 	        	$.each(data.posts, function(index, val) {
 	        		if (val.tags.length) {
-		        		$('.bookmark-container ul[data-tag="'+ val.tags[0].name +'"]').append('<li><time>'+ prettyDate(val.created_at) +'</time><a href="#" class="read-later" data-id="'+ val.id +'"></a><a href="'+ val.link +'">'+ val.title +'</a></li>');
+		        		$('.bookmark-container ul[data-tag="'+ val.tags[0].name +'"]').append('<li><time>'+ prettyDate(val.created_at) +'</time><a href="#" class="read-later active" data-id="'+ val.id +'"></a><a href="'+ val.slug +'">'+ val.title +'</a></li>');
 	        		}else{
-	        			$('.bookmark-container ul[data-tag="Other"]').append('<li><a href="#" class="read-later" data-id="'+ val.id +'"></a><time>'+ prettyDate(val.created_at) +'</time><a href="'+ val.link +'">'+ val.title +'</a></li>');
+	        			$('.bookmark-container ul[data-tag="Other"]').append('<li><a href="#" class="read-later active" data-id="'+ val.id +'"></a><time>'+ prettyDate(val.created_at) +'</time><a href="'+ val.slug +'">'+ val.title +'</a></li>');
 	        		};
 	        	});
+
+    			$('.bookmark-container').find('.read-later').each(function(index, el) {
+					$(this).on('click', function(event) {
+						event.preventDefault();
+						var id = $(this).attr('data-id');
+						if ($(this).hasClass('active')) {
+							removeValue(readLaterPosts, id);
+						}else{
+							readLaterPosts.push(id);
+						};
+						$('.read-later[data-id="'+ id +'"]').each(function(index, el) {
+							$(this).toggleClass('active');
+						});
+						Cookies.set('zvikov-read-later', readLaterPosts, { expires: 365 });
+						bookmarks(readLaterPosts);
+					});
+				});
 
 			});
 		}else{

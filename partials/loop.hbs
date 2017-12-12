@@ -5,14 +5,14 @@
                 <time class="post-date" datetime="{{date format="YYYY-MM-DD"}}">{{date format="MMMM Do, YYYY"}}</time>
                 <div class="post-cover post-meta {{#if feature_image}}has-image{{/if}}">
                     <div class="pagination-number"></div>
-                    <h1 class="post-title"><a href="{{url}}">{{title}}</a></h1>
+                    <h1 class="post-title">{{title}}</h1>
                     <div class="author-name text-center">{{author}}</div>
                     <a href="#" class="read-later" data-id="{{id}}"></a>
                     {{#if feature_image}}
                     <div class="cloned-content">
                         <div class="img-holder" style="background-image: url({{img_url feature_image}})"></div>
                         <div class="pagination-number"></div>
-                        <span class="post-title"><a href="{{url}}">{{title}}</a></span>
+                        <span class="post-title">{{title}}</span>
                         <span class="author-name text-center">{{author}}</span>
                     </div>
                     {{/if}}
@@ -37,36 +37,38 @@
                     {{/foreach}}
                     </ul>
                 {{/if}}
-                {{#author}}
-                    <section class="author">
-                        {{#if profile_image}}
-                        <figure class="author-image">
-                            <a class="img" href="{{url}}" title="{{name}}"><img src="{{img_url profile_image}}" alt="{{name}}"></a>
-                        </figure>
-                        {{/if}}
-
-                        <div class="author-content">
-                            <h3>
-                                <a href="{{url}}">{{name}}</a>
-                            </h3>
-
-                            {{#if bio}}
-                                <p>{{bio}}</p>
-                            {{else}}
-                                <p>Read <a href="{{url}}">more posts</a> by this author.</p>
+                {{^is "author"}}
+                    {{#author}}
+                        <section class="author {{#if profile_image}}has-image{{/if}}">
+                            {{#if profile_image}}
+                            <figure class="author-image">
+                                <a class="img" href="{{url}}" title="{{name}}"><img src="{{img_url profile_image}}" alt="{{name}}"></a>
+                            </figure>
                             {{/if}}
 
-                            <div class="author-meta">
-                                <span class="social">
-                                    {{#if twitter}}<a href="{{twitter_url}}" class="twitter" title="{{twitter}}" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a>{{/if}}
-                                    {{#if facebook}}<a href="{{facebook_url}}" class="facebook" title="{{facebook}}" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a>{{/if}}
-                                </span>
-                                {{#if website}}<span class="author-link"><a href="{{website}}" target="_blank" rel="noopener noreferrer"><i class="fa fa-link" aria-hidden="true"></i> {{website}}</a></span>{{/if}}
-                                {{#if location}}<span class="author-location"><i class="fa fa-map-marker" aria-hidden="true"></i> {{location}}</span>{{/if}}
+                            <div class="author-content">
+                                <h3>
+                                    <a href="{{url}}">{{name}}</a>
+                                </h3>
+
+                                {{#if bio}}
+                                    <p>{{bio}}</p>
+                                {{else}}
+                                    <p>Read <a href="{{url}}">more posts</a> by this author.</p>
+                                {{/if}}
+
+                                <div class="author-meta">
+                                    <span class="social">
+                                        {{#if twitter}}<a href="{{twitter_url}}" class="twitter" title="{{twitter}}" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a>{{/if}}
+                                        {{#if facebook}}<a href="{{facebook_url}}" class="facebook" title="{{facebook}}" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a>{{/if}}
+                                    </span>
+                                    {{#if website}}<span class="author-link"><a href="{{website}}" target="_blank" rel="noopener noreferrer"><i class="fa fa-link" aria-hidden="true"></i> {{website}}</a></span>{{/if}}
+                                    {{#if location}}<span class="author-location"><i class="fa fa-map-marker" aria-hidden="true"></i> {{location}}</span>{{/if}}
+                                </div>
                             </div>
-                        </div>
-                    </section>
-                {{/author}}
+                        </section>
+                    {{/author}}
+                {{/is}}
             </div>
         </div>
     </article>
