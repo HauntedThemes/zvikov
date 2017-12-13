@@ -44,6 +44,7 @@ jQuery(document).ready(function($) {
 			centeredSlides: true,
 			autoHeight: true,
 			simulateTouch: false,
+			allowTouchMove: false,
 			navigation: {
 		        nextEl: '#content .loop .next a',
 		        prevEl: '#content .loop .prev a',

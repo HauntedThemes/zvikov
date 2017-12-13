@@ -10,9 +10,9 @@
 </head>
 <body class="subscribe">
 
-    <main id="content" class="container content-inner" role="main">
-        <article class="{{post_class}}">
-            <section class="post-content text-center">
+    <main id="content" role="main">
+        <div class="container">
+            <div class="col-lg-8 offset-lg-2 text-center">
                 <h1 class="post-title">
                     {{^if success}}
                         Subscribe to {{@blog.title}}
@@ -24,7 +24,7 @@
                     {{subscribe_form
                         form_class="gh-signin"
                         input_class="gh-input"
-                        button_class="btn btn-blue btn-block"
+                        button_class="btn fa fa-long-arrow-right"
                         placeholder="Your email address"
                         autofocus="true"
                     }}
@@ -47,10 +47,9 @@
                 </div>
                 <span class="or">or</span>
                 <a href="{{@blog.url}}" class="btn" title="Back">Return to main page</a>
-            </section>
-        </article>
+            </div>
+        </div>
     </main>
-
 
     {{!-- jQuery needs to come before `{{ghost_foot}}` so that jQuery can be used in code injection --}}
     <script type="text/javascript" src="{{asset "js/jquery-1.12.4.min.js"}}"></script>
@@ -61,7 +60,7 @@
     {{!-- Ghost outputs important scripts and data with this tag --}}
     {{ghost_foot}}
     
-    {{!-- The main JavaScript file for Haihara --}}
+    {{!-- The main JavaScript file for Zvikov --}}
     <script type="text/javascript" src="{{asset "js/main.js"}}"></script>
 
 </body>
