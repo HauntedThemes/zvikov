@@ -18,12 +18,14 @@ jQuery(document).ready(function($) {
         firstPostId = $('.article-container .read-later').attr('data-id'),
         firstPostIndex = 0,
         allPosts,
-        readLaterPosts = [];
+        readLaterPosts = [],
+        swiperPosts,
+        checkHistoryOnChange;
 
 	$('#content .loop .swiper-slide').addClass('first');
 
-    hoverTitle();
     imageInDiv();
+    readingTime($('#content .loop .swiper-slide'));
 
 	if (typeof Cookies.get('zvikov-read-later') !== "undefined") {
 		readLaterPosts = JSON.parse(Cookies.get('zvikov-read-later'));
@@ -33,7 +35,8 @@ jQuery(document).ready(function($) {
 
 	$(window).on('load', function(event) {
 
-		var swiperPosts = new Swiper('#content .loop .swiper-container', {
+		// Initialize Posts Swiper slider
+		swiperPosts = new Swiper('#content .loop .swiper-container', {
 			slidesPerView: 1,
 			spaceBetween: 30,
 			centeredSlides: true,
@@ -46,8 +49,9 @@ jQuery(document).ready(function($) {
 	      	},
 		});
 
-		var checkHistoryOnChange = 0;
+		checkHistoryOnChange = 0;
 
+		// On slide change add new post to history
 		swiperPosts.on('slideChangeTransitionEnd', function(event) {
 			$('.swiper-wrapper').height($('.swiper-slide-active').height());
 
@@ -62,6 +66,7 @@ jQuery(document).ready(function($) {
 
 		pathname = pathname.replace(/#(.*)$/g, '').replace('/\//g', '/');
 
+		// If body has class paged load next/prev posts based on the current page number
 		if ($('body').hasClass('paged')) {
 			currentPageNext = parseInt(pathname.replace(/[^0-9]/gi, ''));
 			currentPagePrev = parseInt(pathname.replace(/[^0-9]/gi, ''));
@@ -71,18 +76,24 @@ jQuery(document).ready(function($) {
 			maxPages = 0;
 		};
 
+		// If body has class tag-template filter by current tag
 		if ($('body').hasClass('tag-template')) {
 			filter = "tag:" + $('body').attr('data-tag');
 		};
+
+		// If body has class author-template filter by current author
 		if ($('body').hasClass('author-template')) {
 			filter = "author:" + $('body').attr('data-author');
 		};
+
+		// Fetch posts
 		$.get(ghost.url.api('posts', {limit: "all", filter: filter})).done(function (data){
 
 			allPosts = data.posts;
 			countAllPosts = data.posts.length;
 			maxPages = countAllPosts;
 
+			// Create pagination number
 			$.each(data.posts, function(index, val) {
 				if (val.id == firstPostId) {
 					firstPostIndex = index+1;
@@ -97,10 +108,11 @@ jQuery(document).ready(function($) {
 						currentPagePrev = index;
 					};
 				});
-			}else if($('body').hasClass('subscribe') || $('.error-content').length){
+			}else if($('body').hasClass('subscribe') || $('body').hasClass('page-template') || $('.error-content').length){
 				return;
 			};
 
+			// Load new posts
 			if (firstPostIndex == 1) {
 				for (var i = 0; i <= 1; i++) {
 					loadNextPost(maxPages, nextPage, allPosts, swiperPosts);
@@ -111,6 +123,7 @@ jQuery(document).ready(function($) {
 				loadPrevPost(maxPages, prevPage, allPosts, swiperPosts);
 			};
 
+			// On slide change load new posts
 			swiperPosts.on('slideChange', function(event) {
 				$('.loop .swiper-slide.first').removeClass('first').addClass('loaded');
 				activeSlide = swiperPosts.activeIndex;
@@ -129,6 +142,7 @@ jQuery(document).ready(function($) {
 
 	});
 
+	// Make arrows sticky
     if (w < 768){
         $(".next, .prev").stick_in_parent({
 			offset_top: 100,
@@ -207,6 +221,7 @@ jQuery(document).ready(function($) {
 
     });
 
+    // On back/forward click change slide
 	if (window.history && window.history.pushState) {
 		$(window).on('popstate', function() {
 			checkHistoryOnChange = 1;
@@ -229,20 +244,14 @@ jQuery(document).ready(function($) {
 		});
 	}
 
-    function hoverTitle(){
-	    $('.cloned-content .post-title').on('mouseover', function(event) {
-    		$(this).parent().addClass('active');
-	    }).on('mouseleave', function(event) {
-	    	$(this).parent().removeClass('active');
-	    });
-    }
-
+	// Wrap image in a span element
     function imageInDiv(){
     	$('.swiper-slide:not(.swiper-slide-active) .article-container .post-content img').each(function(index, el) {
-    		if (!$(this).parent().hasClass('img-holder') && !$(this).parent().parent().hasClass('img-holder')) {
-    			$(this).parent().addClass('img-holder');
-    			$(this).parent().append('<span></span>');
-    			$(this).appendTo($(this).parent().find('span'));
+    		var parent = $(this).parent();
+    		if (!parent.hasClass('img-holder') && !parent.parent().hasClass('img-holder')) {
+    			parent.addClass('img-holder');
+    			parent.append('<span></span>');
+    			$(this).appendTo(parent.find('span'));
     		};
     	});
     }
@@ -388,10 +397,10 @@ jQuery(document).ready(function($) {
 
         	var currentIndex = parseInt($('.loop .swiper-slide:last-child .pagination-number:first-child b').text()) + 1;
         	content.find('.pagination-number').append('<b>'+ currentIndex +'</b>/' + countAllPosts);
+	    	readingTime(content.find('#content .loop .swiper-slide'));
 
         	content.find('#content .loop .swiper-slide').addClass('loaded').removeClass('first');
             swiperPosts.appendSlide(content.find('#content .loop .swiper-slide'));
-	    	hoverTitle();
 	    	imageInDiv();
 
 	    	if (!$('.loop .next a, .loop .prev a').hasClass('active')) {
@@ -432,10 +441,10 @@ jQuery(document).ready(function($) {
 
         	var currentIndex = parseInt($('.loop .swiper-slide:first-child .pagination-number:first-child b').text()) - 1;
         	content.find('.pagination-number').append('<b>'+ currentIndex +'</b>/' + countAllPosts);
+	    	readingTime(content.find('#content .loop .swiper-slide'));
 
             content.find('#content .loop .swiper-slide').addClass('loaded').removeClass('first');
             swiperPosts.prependSlide($(content).find('#content .loop .swiper-slide'));
-	    	hoverTitle();
 	    	imageInDiv();
 
 	    	if (!$('.loop .next a, .loop .prev a').hasClass('active')) {
@@ -446,6 +455,18 @@ jQuery(document).ready(function($) {
 
         });
 
+	}
+
+	function readingTime(content){
+		var readingTime = content.find('.reading-time');
+		if (readingTime.length) {
+			if (readingTime.text() == '< 1 min read') {
+				readingTime.text('<1m');
+			}else{
+				readingTime.text(parseInt(readingTime.text()) + 'm');
+			};
+			readingTime.removeClass('d-none');
+		};
 	}
 
 });

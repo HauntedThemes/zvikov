@@ -24,7 +24,16 @@
         <div class="row">
             <div class="col-lg-8 col-sm-10 offset-sm-1 offset-lg-2">
                 <section class="post-content">
+                    <div class="reading-time d-none">{{reading_time}}</div>
                     {{content}}
+                    <div class="share-on">
+                        <p>Share on: </p>
+                        <a class="share-facebook" href="https://www.facebook.com/sharer/sharer.php?u={{url absolute="true"}}" onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;" title="Share on Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                        <a class="share-twitter" href="https://twitter.com/share?text={{encode title}}&amp;url={{url absolute="true"}}" onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;" title="Share on Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                        <a href="https://plus.google.com/share?url={{url absolute="true"}}" title="Share on Google+"><i class="fa fa-google-plus" aria-hidden="true"></i></a>
+                        <a href="https://www.reddit.com/submit?url={{url absolute="true"}}%2F&title={{encode title}}" title="Share on Reddit"><i class="fa fa-reddit-alien" aria-hidden="true"></i></a>
+                        <a href="mailto:?subject={{encode title}}&amp;body={{url absolute="true"}}" title="Share by Email"><i class="fa fa-envelope" aria-hidden="true"></i></a>
+                    </div>
                 </section>
                 {{#if tags}}
                     <ul class="tags">
