@@ -219,6 +219,10 @@ jQuery(document).ready(function($) {
 			});
         }
 
+        setTimeout(function() {
+			$('.swiper-wrapper').height($('.swiper-slide-active').height());
+		}, 300);
+
     });
 
     // On back/forward click change slide

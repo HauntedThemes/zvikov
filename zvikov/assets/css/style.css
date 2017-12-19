@@ -1346,9 +1346,11 @@ footer .tags li a{
 }
 
 footer .copyright{
+    font-family: "roboto-mono", "Roboto Mono", sans-serif;
     text-align: center;
     font-size: 14px;
     margin-top: 100px;
+    font-weight: normal;
 }
 
 /* ==========================================================================
