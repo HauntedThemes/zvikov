@@ -254,8 +254,8 @@ jQuery(document).ready(function($) {
     		var parent = $(this).parent();
     		if (!parent.hasClass('img-holder') && !parent.parent().hasClass('img-holder')) {
     			parent.addClass('img-holder');
-    			parent.append('<span></span>');
-    			$(this).appendTo(parent.find('span'));
+    			parent.prepend('<span></span>');
+    			$(this).prependTo(parent.find('span'));
     		};
     	});
     }
