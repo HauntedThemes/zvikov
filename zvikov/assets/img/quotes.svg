@@ -1,0 +1,18 @@
+<svg width="51" height="40" viewBox="0 0 51 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<title>Group 5 Copy 2</title>
+<desc>Created using Figma</desc>
+<g id="Canvas" transform="translate(-935 -9782)">
+<g id="Group 5 Copy 2" opacity="0.5">
+<g id="Path">
+<use xlink:href="#path0_fill" transform="translate(935 9782)" fill="#D0D4DF"/>
+</g>
+<g id="Path">
+<use xlink:href="#path1_fill" transform="translate(962.69 9782)" fill="#D0D4DF"/>
+</g>
+</g>
+</g>
+<defs>
+<path id="path0_fill" fill-rule="evenodd" d="M 14.2603 0C 5.67641 5.99303 0 15.331 0 25.784C 0 34.8432 5.81486 40 12.322 40C 18.2753 40 23.2594 34.9826 23.2594 28.9895C 23.2594 22.9965 19.106 18.9547 13.8449 18.9547C 12.7373 18.9547 11.4913 19.0941 11.0759 19.3728C 12.322 14.3554 17.4446 8.50174 21.875 6.1324L 14.2603 0Z"/>
+<path id="path1_fill" fill-rule="evenodd" d="M 14.1218 0C 5.53796 5.99303 0 15.331 0 25.784C 0 34.8432 5.67641 40 12.1835 40C 18.2753 40 23.121 34.9826 23.121 28.9895C 23.121 22.9965 18.9675 18.9547 13.8449 18.9547C 12.7373 18.9547 11.4913 19.0941 11.0759 19.3728C 12.1835 14.3554 17.4446 8.50174 21.875 6.1324L 14.1218 0Z"/>
+</defs>
+</svg>

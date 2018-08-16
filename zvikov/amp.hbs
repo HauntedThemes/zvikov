@@ -288,8 +288,8 @@
         }
 
         code, kbd, pre, samp{
-            font-size: 22px;
-            line-height: 29px;
+            font-size: 18px;
+            line-height: 24px;
             font-weight: 200;
             padding: 0 5px;
         }
@@ -309,6 +309,10 @@
             line-height: 30px;
             letter-spacing: -1px;
             color: #DF1825;
+        }
+
+        figure{
+            margin: 0;
         }
 
         input{
@@ -415,6 +419,7 @@
             display: inline-block;
             font-family: "roboto-mono", "Roboto Mono", sans-serif;
             z-index: 2;
+            padding: 0 15px;
         }
 
         .article-container .post-title a{
@@ -468,6 +473,14 @@
             padding: 0;
             max-width: 100%;
             height: auto;
+        }
+
+        .post-content .kg-image-card figcaption {
+            border-bottom: 1px solid #ebe9e4;
+            text-align: left;
+            padding: 15px;
+            max-width: 730px;
+            margin: 0 auto;
         }
 
         .tags{
@@ -543,6 +556,8 @@
         .author .author-image img{
             max-width: 100%;
             border-radius: 50%;
+            display: flex;
+            object-fit: cover;
             -webkit-transition: all 0.3s ease-in-out;
             -moz-transition: all 0.3s ease-in-out;
             -o-transition: all 0.3s ease-in-out;
@@ -699,7 +714,7 @@
                 <div class="col-6 ml-auto">
                     <div class="blog-logo">
                         <a href="{{@blog.url}}" title="{{@blog.title}}">
-                            {{#if @blog.logo}} <img src="{{@blog.logo}}" alt="{{@blog.title}}" /> {{else}}{{@blog.title}}{{/if}} 
+                            {{@blog.title}}
                         </a>
                     </div>
                 </div>
@@ -712,11 +727,15 @@
         <article class="{{post_class}} container article-container" data-id="{{comment_id}}">
             <div class="row">
                 <div class="col-md-12 post-cover-container">
-                    <time class="post-date" datetime="{{date format="YYYY-MM-DD"}}">{{date format="MMMM Do, YYYY"}}</time>
+                    <time class="post-date" datetime="{{date format="YYYY-MM-DD"}}">{{date format="Do MMMM YYYY"}}</time>
                     <div class="post-cover post-meta {{#if feature_image}}has-image{{/if}}">
                         <div class="pagination-number"></div>
                         <h1 class="post-title col-lg-8 col-sm-10 offset-sm-1 offset-lg-2">{{title}}</h1>
-                        <div class="author-name text-center">{{author}}</div>
+                        <div class="author-name text-center">
+                            {{#primary_author}}
+                                <a href="{{url}}">{{name}}</a>
+                            {{/primary_author}}
+                        </div>
                         <a href="#" class="read-later" data-id="{{id}}"></a>
                     </div>
                 </div>
@@ -725,7 +744,7 @@
             <div class="row">
                 <div class="col-lg-8 col-sm-10 offset-sm-1 offset-lg-2">
                     <section class="post-content">
-                        {{content}}
+                        {{amp_content}}
                     </section>
                     {{#if tags}}
                         <ul class="tags">
@@ -736,8 +755,8 @@
                         {{/foreach}}
                         </ul>
                     {{/if}}
-                    {{^is "author"}}
-                        {{#author}}
+                    {{#if authors}}
+                        {{#foreach authors}}
                             <section class="author {{#if profile_image}}has-image{{/if}}">
                                 {{#if profile_image}}
                                 <figure class="author-image">
@@ -753,21 +772,21 @@
                                     {{#if bio}}
                                         <p>{{bio}}</p>
                                     {{else}}
-                                        <p>Read <a href="{{url}}">more posts</a> by this author.</p>
+                                        <p>{{{t "Read <a href='{url}'>more posts</a> by this author" url=(url)}}}.</p>
                                     {{/if}}
 
                                     <div class="author-meta">
                                         <span class="social">
-                                            {{#if twitter}}<a href="{{twitter_url}}" class="twitter" title="{{twitter}}" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i>{{twitter}}</a>{{/if}}
-                                            {{#if facebook}}<a href="{{facebook_url}}" class="facebook" title="{{facebook}}" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i>{{facebook}}</a>{{/if}}
+                                            {{#if twitter}}<a href="{{twitter_url}}" class="twitter" title="{{twitter}}" target="_blank"><i class="fab fa-twitter" aria-hidden="true"></i></a>{{/if}}
+                                            {{#if facebook}}<a href="{{facebook_url}}" class="facebook" title="{{facebook}}" target="_blank"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>{{/if}}
                                         </span>
                                         {{#if website}}<span class="author-link"><a href="{{website}}" target="_blank" rel="noopener noreferrer"><i class="fa fa-link" aria-hidden="true"></i> {{website}}</a></span>{{/if}}
                                         {{#if location}}<span class="author-location"><i class="fa fa-map-marker" aria-hidden="true"></i> {{location}}</span>{{/if}}
                                     </div>
                                 </div>
                             </section>
-                        {{/author}}
-                    {{/is}}
+                        {{/foreach}}
+                    {{/if}}
                 </div>
             </div>
         </article>
@@ -777,23 +796,25 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="footer-content">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h3>Tags</h3>
-                            {{#get "tags" limit="all"}}
-                                <ul class="tags">
-                                    {{#foreach tags}}
-                                        <li>
-                                            <a href="{{url}}">{{name}}</a>
-                                        </li>
-                                    {{/foreach}}
-                                </ul>
-                            {{/get}}
-                        </div>
-                    </div>
+                    {{#get "tags" limit="all"}}
+                        {{#if tags}}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h3>{{t "Tags"}}</h3>
+                                    <ul class="tags">
+                                        {{#foreach tags}}
+                                            <li>
+                                                <a href="{{url}}">{{name}}</a>
+                                            </li>
+                                        {{/foreach}}
+                                    </ul>
+                                </div>
+                            </div>
+                        {{/if}}
+                    {{/get}}
                     <div class="row">
                         <div class="col-md-12">
-                            <p class="copyright">&copy; {{date format="YYYY"}}, <a href="{{@blog.url}}">{{@blog.title}}</a>. All Right Reserved.</p>
+                            <p class="copyright">{{t "Copyright"}} &copy; {{date format="YYYY"}}, <a href="{{@blog.url}}">{{@blog.title}}</a>. {{t "All Right Reserved"}}.</p>
                         </div>
                     </div>
                 </div>

@@ -20,8 +20,11 @@ jQuery(document).ready(function($) {
         allPosts,
         readLaterPosts = [],
         swiperPosts,
-        checkHistoryOnChange;
+        checkHistoryOnChange,
+        lang = $('body').attr('lang'),
+        noBookmarksMessage = $('.no-bookmarks').text();
 
+    moment.locale(lang);
 	$('#content .loop .swiper-slide').addClass('first');
 
     imageInDiv();
@@ -78,12 +81,12 @@ jQuery(document).ready(function($) {
 
 		// If body has class tag-template filter by current tag
 		if ($('body').hasClass('tag-template')) {
-			filter = "tag:" + $('body').attr('data-tag');
+			filter = "tag:" + $('.tag-title').attr('data-tag');
 		};
 
 		// If body has class author-template filter by current author
 		if ($('body').hasClass('author-template')) {
-			filter = "author:" + $('body').attr('data-author');
+			filter = "author:" + $('.author').attr('data-author');
 		};
 
 		// Fetch posts
@@ -182,14 +185,19 @@ jQuery(document).ready(function($) {
         	tags.sort();
 
         	$.each(tags, function(index, val) {
-        		$('#results').append('<h5>'+ val +'</h5><ul data-tag="'+ val +'" class="list-box"</ul>');
+        		var tag = val;
+        		if (val == 'Other') {
+        			tag = $('#results').attr('data-other');
+        		};
+        		$('#results').append('<h5>'+ tag +'</h5><ul data-tag="'+ val +'" class="list-box"</ul>');
         	});
 
         	$.each(results, function(index, val) {
+        		var date = moment(val.pubDate, "D MMMM YYYY").format('D MMMM YYYY');
         		if (val.tags.length) {
-	        		$('#results ul[data-tag="'+ val.tags[0].name +'"]').append('<li><time>'+ val.pubDate +'</time><a href="#" class="read-later" data-id="'+ val.id +'"></a><a href="'+ val.link +'">'+ val.title +'</a></li>');
+	        		$('#results ul[data-tag="'+ val.tags[0].name +'"]').append('<li><time>'+ date +'</time><a href="#" class="read-later" data-id="'+ val.id +'"></a><a href="'+ val.link +'">'+ val.title +'</a></li>');
         		}else{
-        			$('#results ul[data-tag="Other"]').append('<li><a href="#" class="read-later" data-id="'+ val.id +'"></a><time>'+ val.pubDate +'</time><a href="'+ val.link +'">'+ val.title +'</a></li>');
+        			$('#results ul[data-tag="Other"]').append('<li><a href="#" class="read-later" data-id="'+ val.id +'"></a><time>'+ date +'</time><a href="'+ val.link +'">'+ val.title +'</a></li>');
         		};
         	});
 
@@ -197,6 +205,10 @@ jQuery(document).ready(function($) {
 
         }
     });
+
+	$('#search').on('shown.bs.modal', function (e) {
+		$('#search-field').focus();
+	});
 
 	// Execute on resize
     $(window).on('resize', function(event) {
@@ -247,6 +259,11 @@ jQuery(document).ready(function($) {
 			};
 		});
 	}
+
+    // Initialize Highlight.js
+    $('pre').each(function(i, block) {
+        hljs.highlightBlock(block);
+    });
 
 	// Wrap image in a span element
     function imageInDiv(){
@@ -315,7 +332,7 @@ jQuery(document).ready(function($) {
 
 		$('.bookmark-container').empty();
 		if (readLaterPosts.length) {
-			$('header .counter').removeClass('hidden').text(readLaterPosts.length);
+
 			var filter = readLaterPosts.toString();
 			filter = "id:["+filter+"]";
 
@@ -336,14 +353,19 @@ jQuery(document).ready(function($) {
 	        	tags.sort();
 
 	        	$.each(tags, function(index, val) {
-	        		$('.bookmark-container').append('<h5>'+ val +'</h5><ul data-tag="'+ val +'" class="list-box"</ul>');
+	        		var tag = val;
+	        		if (val == 'Other') {
+	        			tag = $('#results').attr('data-other');
+	        		};
+	        		$('.bookmark-container').append('<h5>'+ tag +'</h5><ul data-tag="'+ val +'" class="list-box"</ul>');
 	        	});
 
 	        	$.each(data.posts, function(index, val) {
+	        		var date = moment(prettyDate(val.created_at), "D MMMM YYYY").format('D MMMM YYYY');
 	        		if (val.tags.length) {
-		        		$('.bookmark-container ul[data-tag="'+ val.tags[0].name +'"]').append('<li><time>'+ prettyDate(val.created_at) +'</time><a href="#" class="read-later active" data-id="'+ val.id +'"></a><a href="/'+ val.slug +'">'+ val.title +'</a></li>');
+		        		$('.bookmark-container ul[data-tag="'+ val.tags[0].name +'"]').append('<li><time>'+ date +'</time><a href="#" class="read-later active" data-id="'+ val.id +'"></a><a href="/'+ val.slug +'">'+ val.title +'</a></li>');
 	        		}else{
-	        			$('.bookmark-container ul[data-tag="Other"]').append('<li><a href="#" class="read-later active" data-id="'+ val.id +'"></a><time>'+ prettyDate(val.created_at) +'</time><a href="/'+ val.slug +'">'+ val.title +'</a></li>');
+	        			$('.bookmark-container ul[data-tag="Other"]').append('<li><a href="#" class="read-later active" data-id="'+ val.id +'"></a><time>'+ date +'</time><a href="/'+ val.slug +'">'+ val.title +'</a></li>');
 	        		};
 	        	});
 
@@ -364,10 +386,17 @@ jQuery(document).ready(function($) {
 					});
 				});
 
+				if (data.posts.length) {
+					$('header .counter').removeClass('hidden').text(data.posts.length);
+				}else{
+					$('header .counter').addClass('hidden');
+					$('.bookmark-container').append('<p class="no-bookmarks">'+ noBookmarksMessage +'</p>');
+				};
+
 			});
 		}else{
 			$('header .counter').addClass('hidden');
-			$('.bookmark-container').append('<p class="no-bookmarks">You haven\'t yet saved any bookmarks. To bookmark a post, just click <i class="circle"></i>.</p>')
+			$('.bookmark-container').append('<p class="no-bookmarks">'+ noBookmarksMessage +'</p>')
 		};
 
 	}
@@ -410,6 +439,10 @@ jQuery(document).ready(function($) {
 	    	if (!$('.loop .next a, .loop .prev a').hasClass('active')) {
 	    		$('.loop .next a, .loop .prev a').addClass('active');
 	    	};
+
+		    $('pre:not(.hljs)').each(function(i, block) {
+		        hljs.highlightBlock(block);
+		    });
 
 			readLaterPosts = readLater($('.loop .swiper-slide:last-child'), readLaterPosts);
 
@@ -454,6 +487,10 @@ jQuery(document).ready(function($) {
 	    	if (!$('.loop .next a, .loop .prev a').hasClass('active')) {
 	    		$('.loop .next a, .loop .prev a').addClass('active');
 	    	};
+
+		    $('pre:not(.hljs)').each(function(i, block) {
+		        hljs.highlightBlock(block);
+		    });
 
 	    	readLaterPosts = readLater($('.loop .swiper-slide:first-child'), readLaterPosts);
 

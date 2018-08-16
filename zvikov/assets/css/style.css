@@ -212,11 +212,25 @@ mark {
 
 blockquote{
     margin: 60px 0 60px -103px;
-    font-style: italic;
     font-size: 32px;
     letter-spacing: -1px;
     line-height: 42px;
     color: #DF1825;
+    position: relative;
+}
+
+blockquote:before {
+    content: '';
+    width: 50px;
+    height: 40px;
+    background-image: url(../img/quotes.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: -20px;
+    left: 0;
+    margin-left: -25px;
+    background-size: contain;
 }
 
 blockquote p{
@@ -802,7 +816,7 @@ header h5:before{
 
 .article-container .post-content img {
     display: inline-block;
-    max-width: calc(100% + 206px);
+    max-width: 100%;
     height: auto;
     margin: 55px 0;
     position: relative;
@@ -940,11 +954,11 @@ header h5:before{
     transition: all 0.3s ease-in-out;
 }
 
-.post-content a{
+.editor-content a:not(.img-holder){
     border-bottom: 1px solid #E83030;
 }
 
-.post-content a:hover{
+.editor-content a:not(.img-holder):hover{
     border-bottom: 1px solid #333333;
 }
 
@@ -1077,9 +1091,9 @@ header h5:before{
     border-radius: 10px;
 }
 
-.loop .swiper-slide.loaded:not(.swiper-slide-active) iframe{
+.loop .swiper-slide.loaded:not(.swiper-slide-active) iframe,
+.loop .swiper-slide:not(.swiper-slide-active):not(.first) .kg-embed-card{
     opacity: 0;
-    border: 1px solid #b4b4b4;
 }
 
 .loop .swiper-slide .article-container{
@@ -1117,6 +1131,8 @@ header h5:before{
     -moz-box-shadow: inset 0px 0px 0px 1px #b4b4b4;
     box-shadow: inset 0px 0px 0px 1px #b4b4b4;
     position: relative;
+    display: flex;
+    align-items: center;
     background: linear-gradient(to top left, rgba(0,0,0,0) 0%, rgba(0,0,0,0) calc(50% - 0.8px), #b4b4b4 50%, rgba(0,0,0,0) calc(50% + 0.8px), rgba(0,0,0,0) 100%), linear-gradient(to top right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) calc(50% - 0.8px), #b4b4b4 50%, rgba(0,0,0,0) calc(50% + 0.8px), rgba(0,0,0,0) 100%);
 }
 
@@ -1188,6 +1204,10 @@ header h5:before{
 }
 
 .author .author-image img{
+    width: 80px;
+    height: 80px;
+    display: flex;
+    object-fit: cover;
     max-width: 100%;
     border-radius: 50%;
     -webkit-transition: all 0.3s ease-in-out;
@@ -1509,6 +1529,10 @@ footer .copyright{
 }
 
 @media (max-width: 767px) {
+    blockquote:before{
+        width: 30px;
+        margin-left: -10px;
+    }
     blockquote {
         margin: 45px 0 45px -31px;
     }

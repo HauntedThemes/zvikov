@@ -1,13 +1,12 @@
 <span class="page-number"><b>{{page}}</b>/{{pages}}</span>
 
-<div class="pagination-container">
-	{{!-- Pagination --}}
-	<nav class="pagination" role="navigation">
-	    {{#if prev}}
-	        <a class="newer-posts" href="{{page_url prev}}"><b>Newer <span>Posts</span></b></a>
-	    {{/if}}
-	    {{#if next}}
-	        <a class="older-posts" href="{{page_url next}}"><b>Older <span>Posts</span></b></a>
-	    {{/if}}
-	</nav>
-</div>
+{{!-- Pagination --}}
+<nav class="pagination container" role="navigation">
+    {{#if prev}}
+        <a class="newer-posts" href="{{page_url prev}}">{{t "Newer Posts"}}</a>
+    {{/if}}
+    <span class="page-number">{{t "Page {page} of {pages}" page=page pages=pages}}</span>
+    {{#if next}}
+        <a class="older-posts" href="{{page_url next}}">{{t "Older Posts"}}</a>
+    {{/if}}
+</nav>
