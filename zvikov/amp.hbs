@@ -744,7 +744,7 @@
             <div class="row">
                 <div class="col-lg-8 col-sm-10 offset-sm-1 offset-lg-2">
                     <section class="post-content">
-                        {{amp_content}}
+                        <div class="editor-content">{{amp_content}}</div>
                     </section>
                     {{#if tags}}
                         <ul class="tags">
@@ -796,22 +796,24 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="footer-content">
-                    {{#get "tags" limit="all"}}
-                        {{#if tags}}
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h3>{{t "Tags"}}</h3>
-                                    <ul class="tags">
-                                        {{#foreach tags}}
-                                            <li>
-                                                <a href="{{url}}">{{name}}</a>
-                                            </li>
-                                        {{/foreach}}
-                                    </ul>
+                    {{#if @labs.publicAPI}}
+                        {{#get "tags" limit="all"}}
+                            {{#if tags}}
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h3>{{t "Tags"}}</h3>
+                                        <ul class="tags">
+                                            {{#foreach tags}}
+                                                <li>
+                                                    <a href="{{url}}">{{name}}</a>
+                                                </li>
+                                            {{/foreach}}
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
-                        {{/if}}
-                    {{/get}}
+                            {{/if}}
+                        {{/get}}
+                    {{/if}}
                     <div class="row">
                         <div class="col-md-12">
                             <p class="copyright">{{t "Copyright"}} &copy; {{date format="YYYY"}}, <a href="{{@blog.url}}">{{@blog.title}}</a>. {{t "All Right Reserved"}}.</p>

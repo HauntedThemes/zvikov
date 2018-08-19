@@ -640,6 +640,7 @@ header h5:before{
     z-index: 2;
     padding-bottom: 100px;
     display: block;
+    color: #B9B2A2;
 }
 
 .article-container .post-title{
@@ -694,7 +695,7 @@ header h5:before{
     color: #E83030;
 }
 
-.swiper-slide-active .post-cover.has-image:hover .cloned-content{
+.post-cover.has-image:hover .cloned-content{
     height: 100%;
 }
 
@@ -754,7 +755,8 @@ header h5:before{
     color: #fff;
 }
 
-.article-container .post-meta .cloned-content .author-name a{
+.article-container .post-meta .cloned-content .author-name a,
+.article-container .post-meta .cloned-content .author-name{
     color: #fff;
 }
 

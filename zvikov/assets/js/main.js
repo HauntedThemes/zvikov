@@ -22,126 +22,132 @@ jQuery(document).ready(function($) {
         swiperPosts,
         checkHistoryOnChange,
         lang = $('body').attr('lang'),
-        noBookmarksMessage = $('.no-bookmarks').text();
+        noBookmarksMessage = $('.no-bookmarks').text(),
+        monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "Sepember", "October", "November", "December"];
 
-    moment.locale(lang);
 	$('#content .loop .swiper-slide').addClass('first');
 
     imageInDiv();
     readingTime($('#content .loop .swiper-slide'));
 
-	if (typeof Cookies.get('zvikov-read-later') !== "undefined") {
-		readLaterPosts = JSON.parse(Cookies.get('zvikov-read-later'));
-	}
+    if (typeof ghost !== 'undefined') {
+		if (typeof Cookies.get('zvikov-read-later') !== "undefined") {
+			readLaterPosts = JSON.parse(Cookies.get('zvikov-read-later'));
+		}
 
-	readLaterPosts = readLater($('#content .loop .swiper-slide'), readLaterPosts);
+		readLaterPosts = readLater($('#content .loop .swiper-slide'), readLaterPosts);
+    }
 
 	$(window).on('load', function(event) {
 
-		// Initialize Posts Swiper slider
-		swiperPosts = new Swiper('#content .loop .swiper-container', {
-			slidesPerView: 1,
-			spaceBetween: 30,
-			centeredSlides: true,
-			autoHeight: true,
-			simulateTouch: false,
-			allowTouchMove: false,
-			navigation: {
-		        nextEl: '#content .loop .next a',
-		        prevEl: '#content .loop .prev a',
-	      	},
-		});
+		if (typeof ghost !== 'undefined') {
 
-		checkHistoryOnChange = 0;
-
-		// On slide change add new post to history
-		swiperPosts.on('slideChangeTransitionEnd', function(event) {
-			$('.swiper-wrapper').height($('.swiper-slide-active').height());
-
-			if (checkHistoryOnChange != 1) {
-				var value = $('.swiper-slide-active').attr('data-history');
-				var url = window.location.origin + '/' + value + '/';
-				history.pushState({ value: value }, null, url);
-			};
-
-			checkHistoryOnChange = 0;
-		});
-
-		pathname = pathname.replace(/#(.*)$/g, '').replace('/\//g', '/');
-
-		// If body has class paged load next/prev posts based on the current page number
-		if ($('body').hasClass('paged')) {
-			currentPageNext = parseInt(pathname.replace(/[^0-9]/gi, ''));
-			currentPagePrev = parseInt(pathname.replace(/[^0-9]/gi, ''));
-		};
-
-		if (typeof maxPages === 'undefined' || maxPages === null) {
-			maxPages = 0;
-		};
-
-		// If body has class tag-template filter by current tag
-		if ($('body').hasClass('tag-template')) {
-			filter = "tag:" + $('.tag-title').attr('data-tag');
-		};
-
-		// If body has class author-template filter by current author
-		if ($('body').hasClass('author-template')) {
-			filter = "author:" + $('.author').attr('data-author');
-		};
-
-		// Fetch posts
-		$.get(ghost.url.api('posts', {limit: "all", filter: filter})).done(function (data){
-
-			allPosts = data.posts;
-			countAllPosts = data.posts.length;
-			maxPages = countAllPosts;
-
-			// Create pagination number
-			$.each(data.posts, function(index, val) {
-				if (val.id == firstPostId) {
-					firstPostIndex = index+1;
-					$('.pagination-number').append('<b>'+ firstPostIndex +'</b>/' + countAllPosts);
-				};
+			// Initialize Posts Swiper slider
+			swiperPosts = new Swiper('#content .loop .swiper-container', {
+				slidesPerView: 1,
+				spaceBetween: 30,
+				centeredSlides: true,
+				autoHeight: true,
+				simulateTouch: false,
+				allowTouchMove: false,
+				navigation: {
+			        nextEl: '#content .loop .next a',
+			        prevEl: '#content .loop .prev a',
+		      	},
 			});
 
-			if ($('body').hasClass('post-template')) {
-				$.each(allPosts, function(index, val) {
-					if (val.id == $('.loop .swiper-slide:last-child .article-container .read-later').attr('data-id')) {
-						currentPageNext = index;
-						currentPagePrev = index;
-					};
-				});
-			}else if($('body').hasClass('subscribe') || $('body').hasClass('page-template') || $('.error-content').length){
-				return;
+			checkHistoryOnChange = 0;
+
+			// On slide change add new post to history
+			swiperPosts.on('slideChangeTransitionEnd', function(event) {
+				$('.swiper-wrapper').height($('.swiper-slide-active').height());
+
+				if (checkHistoryOnChange != 1) {
+					var value = $('.swiper-slide-active').attr('data-history');
+					var url = window.location.origin + '/' + value + '/';
+					history.pushState({ value: value }, null, url);
+				};
+
+				checkHistoryOnChange = 0;
+			});
+
+			pathname = pathname.replace(/#(.*)$/g, '').replace('/\//g', '/');
+
+			// If body has class paged load next/prev posts based on the current page number
+			if ($('body').hasClass('paged')) {
+				currentPageNext = parseInt(pathname.replace(/[^0-9]/gi, ''));
+				currentPagePrev = parseInt(pathname.replace(/[^0-9]/gi, ''));
 			};
 
-			// Load new posts
-			if (firstPostIndex == 1) {
-				for (var i = 0; i <= 1; i++) {
+			if (typeof maxPages === 'undefined' || maxPages === null) {
+				maxPages = 0;
+			};
+
+			// If body has class tag-template filter by current tag
+			if ($('body').hasClass('tag-template')) {
+				filter = "tag:" + $('.tag-title').attr('data-tag');
+			};
+
+			// If body has class author-template filter by current author
+			if ($('body').hasClass('author-template')) {
+				filter = "author:" + $('.author').attr('data-author');
+			};
+
+			// Fetch posts
+			$.get(ghost.url.api('posts', {limit: "all", filter: filter})).done(function (data){
+
+				allPosts = data.posts;
+				countAllPosts = data.posts.length;
+				maxPages = countAllPosts;
+
+				// Create pagination number
+				$.each(data.posts, function(index, val) {
+					if (val.id == firstPostId) {
+						firstPostIndex = index+1;
+						$('.pagination-number').append('<b>'+ firstPostIndex +'</b>/' + countAllPosts);
+					};
+				});
+
+				if ($('body').hasClass('post-template')) {
+					$.each(allPosts, function(index, val) {
+						if (val.id == $('.loop .swiper-slide:last-child .article-container .read-later').attr('data-id')) {
+							currentPageNext = index;
+							currentPagePrev = index;
+						};
+					});
+				}else if($('body').hasClass('subscribe') || $('body').hasClass('page-template') || $('.error-content').length){
+					return;
+				};
+
+				// Load new posts
+				if (firstPostIndex == 1) {
+					for (var i = 0; i <= 1; i++) {
+						loadNextPost(maxPages, nextPage, allPosts, swiperPosts);
+						loadPrevPost(maxPages, prevPage, allPosts, swiperPosts);
+					};
+				}else{
 					loadNextPost(maxPages, nextPage, allPosts, swiperPosts);
 					loadPrevPost(maxPages, prevPage, allPosts, swiperPosts);
 				};
-			}else{
-				loadNextPost(maxPages, nextPage, allPosts, swiperPosts);
-				loadPrevPost(maxPages, prevPage, allPosts, swiperPosts);
-			};
 
-			// On slide change load new posts
-			swiperPosts.on('slideChange', function(event) {
-				$('.loop .swiper-slide.first').removeClass('first').addClass('loaded');
-				activeSlide = swiperPosts.activeIndex;
-				if (activeSlide == 1) {
-					setTimeout(function() {
-						loadPrevPost(maxPages, prevPage, allPosts, swiperPosts);
-					}, 300);
-				};
+				// On slide change load new posts
+				swiperPosts.on('slideChange', function(event) {
+					$('.loop .swiper-slide.first').removeClass('first').addClass('loaded');
+					activeSlide = swiperPosts.activeIndex;
+					if (activeSlide == 1) {
+						setTimeout(function() {
+							loadPrevPost(maxPages, prevPage, allPosts, swiperPosts);
+						}, 300);
+					};
 
-				if (activeSlide >= (swiperPosts.slides.length - 2)) {
-					loadNextPost( maxPages, nextPage, allPosts, swiperPosts);
-				};
+					if (activeSlide >= (swiperPosts.slides.length - 2)) {
+						loadNextPost( maxPages, nextPage, allPosts, swiperPosts);
+					};
+				});
+
 			});
 
-		});
+		};
 
 	});
 
@@ -193,7 +199,9 @@ jQuery(document).ready(function($) {
         	});
 
         	$.each(results, function(index, val) {
-        		var date = moment(val.pubDate, "D MMMM YYYY").format('D MMMM YYYY');
+                var dateSplit = val.pubDate.split(' ')
+                var month = monthNames.indexOf(dateSplit[1])+1;
+                var date = moment(dateSplit[0]+'-'+month+'-'+dateSplit[2], "DD-MM-YYYY").format('DD MMM YYYY');
         		if (val.tags.length) {
 	        		$('#results ul[data-tag="'+ val.tags[0].name +'"]').append('<li><time>'+ date +'</time><a href="#" class="read-later" data-id="'+ val.id +'"></a><a href="'+ val.link +'">'+ val.title +'</a></li>');
         		}else{
@@ -261,7 +269,7 @@ jQuery(document).ready(function($) {
 	}
 
     // Initialize Highlight.js
-    $('pre').each(function(i, block) {
+    $('pre code').each(function(i, block) {
         hljs.highlightBlock(block);
     });
 
@@ -361,7 +369,9 @@ jQuery(document).ready(function($) {
 	        	});
 
 	        	$.each(data.posts, function(index, val) {
-	        		var date = moment(prettyDate(val.created_at), "D MMMM YYYY").format('D MMMM YYYY');
+                    var dateSplit = prettyDate(val.published_at).split(' ')
+                    var month = monthNames.indexOf(dateSplit[1])+1;
+                    var date = moment(dateSplit[0]+'-'+month+'-'+dateSplit[2], "DD-MM-YYYY").format('DD MMM YYYY');
 	        		if (val.tags.length) {
 		        		$('.bookmark-container ul[data-tag="'+ val.tags[0].name +'"]').append('<li><time>'+ date +'</time><a href="#" class="read-later active" data-id="'+ val.id +'"></a><a href="/'+ val.slug +'">'+ val.title +'</a></li>');
 	        		}else{
