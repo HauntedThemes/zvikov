@@ -909,7 +909,9 @@ header h5:before{
 }
 
 .loop .next a.active,
-.loop .prev a.active{
+.loop .prev a.active,
+.no-api .loop .next a,
+.no-api .loop .prev a{
     opacity: 1;
 }
 

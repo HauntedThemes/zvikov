@@ -21,7 +21,6 @@ jQuery(document).ready(function($) {
         readLaterPosts = [],
         swiperPosts,
         checkHistoryOnChange,
-        lang = $('body').attr('lang'),
         noBookmarksMessage = $('.no-bookmarks').text(),
         monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "Sepember", "October", "November", "December"];
 
@@ -246,7 +245,7 @@ jQuery(document).ready(function($) {
     });
 
     // On back/forward click change slide
-	if (window.history && window.history.pushState) {
+	if (window.history && window.history.pushState && typeof ghost !== 'undefined') {
 		$(window).on('popstate', function() {
 			checkHistoryOnChange = 1;
 			var check = 0;
