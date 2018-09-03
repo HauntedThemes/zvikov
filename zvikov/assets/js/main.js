@@ -22,7 +22,7 @@ jQuery(document).ready(function($) {
         swiperPosts,
         checkHistoryOnChange,
         noBookmarksMessage = $('.no-bookmarks').text(),
-        monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "Sepember", "October", "November", "December"];
+        monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 	$('#content .loop .swiper-slide').addClass('first');
 
