@@ -26,6 +26,7 @@ jQuery(document).ready(function($) {
 
 	$('#content .loop .swiper-slide').addClass('first');
 
+    setGalleryRation();
     imageInDiv();
     readingTime($('#content .loop .swiper-slide'));
 
@@ -38,6 +39,8 @@ jQuery(document).ready(function($) {
     }
 
 	$(window).on('load', function(event) {
+
+		setGalleryRation();
 
 		if (typeof ghost !== 'undefined') {
 
@@ -453,6 +456,8 @@ jQuery(document).ready(function($) {
 		        hljs.highlightBlock(block);
 		    });
 
+		    setGalleryRation();
+
 			readLaterPosts = readLater($('.loop .swiper-slide:last-child'), readLaterPosts);
 
         });
@@ -501,6 +506,8 @@ jQuery(document).ready(function($) {
 		        hljs.highlightBlock(block);
 		    });
 
+		    setGalleryRation();
+
 	    	readLaterPosts = readLater($('.loop .swiper-slide:first-child'), readLaterPosts);
 
         });
@@ -518,5 +525,16 @@ jQuery(document).ready(function($) {
 			readingTime.removeClass('d-none');
 		};
 	}
+
+    // Set the right proportion for images inside the gallery
+    function setGalleryRation(){
+        $('.kg-gallery-image img').each(function(index, el) {
+            var container = $(this).closest('.kg-gallery-image');
+            var width = $(this)[0].naturalWidth;
+            var height = $(this)[0].naturalHeight;
+            var ratio = width / height;
+            container.attr('style', 'flex: ' + ratio + ' 1 0%');
+        });
+    }
 
 });

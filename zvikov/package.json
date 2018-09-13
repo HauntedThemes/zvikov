@@ -2,7 +2,7 @@
     "name": "zvikov",
     "description": "A theme that will only show one post at a time. If you're a fan of decluttering, know that we've decluttered the sh*t out of this one. Specially for you. But most importantly - it's FREE!",
     "demo": "https://zvikov.hauntedthemes.com/",
-    "version": "1.1.3",
+    "version": "1.1.4",
     "license": "GNU General Public License, Version 2",
     "engines": {
         "ghost": ">=1.0.0"

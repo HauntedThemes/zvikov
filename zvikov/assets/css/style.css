@@ -966,6 +966,37 @@ header h5:before{
     border-bottom: 1px solid #333333;
 }
 
+.editor-content .kg-gallery-container {
+    display: flex;
+    flex-direction: column;
+    width: calc(100% + 410px);
+    margin: 55px 0 55px -205px;
+    position: relative;
+}
+
+.editor-content .kg-gallery-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.editor-content .kg-gallery-image img {
+    display: flex;
+    object-fit: cover;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+}
+
+.editor-content .kg-gallery-row:not(:first-of-type) {
+    margin: 10px 0 0 0;
+}
+
+.editor-content .kg-gallery-image:not(:first-of-type) {
+    margin: 0 0 0 10px;
+}
+
 .pagination-number{
     position: absolute;
     top: 20px;
@@ -1488,7 +1519,8 @@ footer .copyright{
     .article-container .post-content .kg-image-card figcaption{
         width: 610px;
     }
-    .article-container .post-content .kg-image-card.kg-width-full {
+    .article-container .post-content .kg-image-card.kg-width-full,
+    .editor-content .kg-gallery-container{
         width: calc(100% + 350px);
         margin: 55px 0 55px -175px;
     }
@@ -1523,7 +1555,8 @@ footer .copyright{
     .article-container .post-content .kg-image-card figcaption{
         width: 570px;
     }
-    .article-container .post-content .kg-image-card.kg-width-full {
+    .article-container .post-content .kg-image-card.kg-width-full,
+    .editor-content .kg-gallery-container{
         width: calc(100% + 150px);
         margin: 55px 0 55px -75px;
     }
@@ -1624,7 +1657,8 @@ footer .copyright{
     .article-container .post-content .kg-image-card figcaption{
         width: 420px;
     }
-    .article-container .post-content .kg-image-card.kg-width-full {
+    .article-container .post-content .kg-image-card.kg-width-full,
+    .editor-content .kg-gallery-container{
         width: calc(100% + 120px);
         margin: 55px 0 55px -60px;
     }
@@ -1698,7 +1732,8 @@ footer .copyright{
         padding: 10px 15px;
         font-size: 14px;
     }
-    .article-container .post-content .kg-image-card.kg-width-full {
+    .article-container .post-content .kg-image-card.kg-width-full,
+    .editor-content .kg-gallery-container{
         width: calc(100% + 30px);
         margin: 55px 0 55px -15px;
     }
