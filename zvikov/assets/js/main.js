@@ -21,7 +21,7 @@ jQuery(document).ready(function($) {
         readLaterPosts = [],
         swiperPosts,
         checkHistoryOnChange,
-        noBookmarksMessage = $('.no-bookmarks').text(),
+        noBookmarksMessage = $('.no-bookmarks').html(),
         monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 	$('#content .loop .swiper-slide').addClass('first');
@@ -402,13 +402,15 @@ jQuery(document).ready(function($) {
 					$('header .counter').removeClass('hidden').text(data.posts.length);
 				}else{
 					$('header .counter').addClass('hidden');
-					$('.bookmark-container').append('<p class="no-bookmarks">'+ noBookmarksMessage +'</p>');
+                    $('.bookmark-container').append('<p class="no-bookmarks"></p>');
+                    $('.no-bookmarks').html(noBookmarksMessage)
 				};
 
 			});
 		}else{
 			$('header .counter').addClass('hidden');
-			$('.bookmark-container').append('<p class="no-bookmarks">'+ noBookmarksMessage +'</p>')
+            $('.bookmark-container').append('<p class="no-bookmarks"></p>');
+            $('.no-bookmarks').html(noBookmarksMessage)
 		};
 
 	}
