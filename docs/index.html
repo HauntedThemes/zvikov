@@ -31,8 +31,8 @@
         <a href="#support" class="item"><b>Support</b></a>
         <div class="ui divider full-divider sidebar-divider"></div>
         <div class="ui  item">
-            <p>v1.1.5 <br>
-            Last update: 18 Sep 2018</p>
+            <p>v2.0.0<br>
+            Last update: 29 Jan 2019</p>
         </div>
         <a href="https://twitter.com/HauntedThemes" class="item" target="_blank"><b><i class="twitter icon"></i> @HauntedThemes</b></a>
         <a href="https://www.facebook.com/HauntedThemes/" class="item" target="_blank"><b><i class="facebook icon"></i> HauntedThemes</b></a>
@@ -72,11 +72,18 @@
                     </ol>
                     <h2>After activation</h2>
                     <ol class="ui list">
-                        <li>Navigate to the <code><b>Settings > Labs</b></code>.</li>
-                        <li>In <code><b>Enable Beta Features</b></code> section, make sure that Public API and Subscribers are checked.</li>
+                        <li>Navigate to the <code><b>Integrations > Custom integrations</b></code>.</li>
+                        <li>Set name: Haunted Themes</li>
+                        <li>
+                            You will need to do 2 more simple steps to authenticate to Ghost Content API.
+                            <ol>
+                                <li>Copy <b>Content API Key</b> from the integration that you set and put it in: <code><b>/assets/js/main.js</b></code> at line 18.</li>
+                                <li>Get the <b>host</b> of your current Ghost instalation. This should be your admin domain. Your admin domain can be different to your main domain. Using the correct domain and protocol are critical to getting consistent behaviour, particularly when dealing with CORS in the browser. All Ghost(Pro) blogs have a *.ghost.io domain as their admin domain and require https. Make sure you remove the last / from the url.</li>
+                            </ol>
+                        </li>
                     </ol>
                     <div class="ui ignored negative message message-inline">
-                        <p><code><b>Public API</b></code> is mandatory in order to use the theme properly!</p>
+                        <p><code><b>Content API Authentication</b></code> is mandatory in order to use the theme properly!</p>
                     </div>
                 </div>
                 <div class="ui divider full-divider"></div>

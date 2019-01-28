@@ -16,8 +16,26 @@
                                     <div class="pagination-number"></div>
                                     <h1 class="post-title col-lg-8 col-sm-10 offset-sm-1 offset-lg-2">{{title}}</h1>
                                     {{#if feature_image}}
+                                    <style type="text/css">
+                                        .responsive-header-img-{{slug}} {
+                                            background-image: url({{img_url feature_image size='l'}});
+                                        }
+                                        @media(max-width: 767px) {
+                                            .responsive-header-img-{{slug}} {
+                                                background-image: url({{img_url feature_image size='m'}});
+                                                background-image: -webkit-image-set(
+                                                    url({{img_url feature_image size='m'}}) 1x,
+                                                    url({{img_url feature_image size='l'}}) 2x
+                                                );
+                                                background-image: image-set(
+                                                    url({{img_url feature_image size='m'}}) 1x,
+                                                    url({{img_url feature_image size='l'}}) 2x
+                                                );
+                                            }
+                                        }
+                                    </style>
                                     <div class="cloned-content">
-                                        <div class="img-holder" style="background-image: url({{img_url feature_image}})"></div>
+                                        <div class="img-holder responsive-header-img-{{slug}}"></div>
                                         <div class="pagination-number"></div>
                                         <span class="post-title col-lg-8 col-sm-10 offset-sm-1 offset-lg-2">{{title}}</span>
                                     </div>

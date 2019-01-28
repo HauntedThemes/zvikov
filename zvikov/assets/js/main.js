@@ -4,6 +4,17 @@
 
 jQuery(document).ready(function($) {
 
+    var config = {
+        'content-api-host': '',
+        'content-api-key': '',
+	};
+	
+    var ghostAPI = new GhostContentAPI({
+        host: config['content-api-host'],
+        key: config['content-api-key'],
+        version: 'v2'
+    });
+
     var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
         h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
         activeSlide,
@@ -30,80 +41,78 @@ jQuery(document).ready(function($) {
     imageInDiv();
     readingTime($('#content .loop .swiper-slide'));
 
-    if (typeof ghost !== 'undefined') {
-		if (typeof Cookies.get('zvikov-read-later') !== "undefined") {
-			readLaterPosts = JSON.parse(Cookies.get('zvikov-read-later'));
-		}
+	if (typeof Cookies.get('zvikov-read-later') !== "undefined") {
+		readLaterPosts = JSON.parse(Cookies.get('zvikov-read-later'));
+	}
 
-		readLaterPosts = readLater($('#content .loop .swiper-slide'), readLaterPosts);
-    }
+	readLaterPosts = readLater($('#content .loop .swiper-slide'), readLaterPosts);
 
 	$(window).on('load', function(event) {
 
 		setGalleryRation();
 
-		if (typeof ghost !== 'undefined') {
+		// Initialize Posts Swiper slider
+		swiperPosts = new Swiper('#content .loop .swiper-container', {
+			slidesPerView: 1,
+			spaceBetween: 30,
+			centeredSlides: true,
+			autoHeight: true,
+			simulateTouch: false,
+			allowTouchMove: false,
+			navigation: {
+				nextEl: '#content .loop .next a',
+				prevEl: '#content .loop .prev a',
+			},
+		});
 
-			// Initialize Posts Swiper slider
-			swiperPosts = new Swiper('#content .loop .swiper-container', {
-				slidesPerView: 1,
-				spaceBetween: 30,
-				centeredSlides: true,
-				autoHeight: true,
-				simulateTouch: false,
-				allowTouchMove: false,
-				navigation: {
-			        nextEl: '#content .loop .next a',
-			        prevEl: '#content .loop .prev a',
-		      	},
-			});
+		checkHistoryOnChange = 0;
+
+		// On slide change add new post to history
+		swiperPosts.on('slideChangeTransitionEnd', function(event) {
+			$('.swiper-wrapper').height($('.swiper-slide-active').height());
+
+			if (checkHistoryOnChange != 1) {
+				var value = $('.swiper-slide-active').attr('data-history');
+				var url = window.location.origin + '/' + value + '/';
+				history.pushState({ value: value }, null, url);
+			};
 
 			checkHistoryOnChange = 0;
+		});
 
-			// On slide change add new post to history
-			swiperPosts.on('slideChangeTransitionEnd', function(event) {
-				$('.swiper-wrapper').height($('.swiper-slide-active').height());
+		pathname = pathname.replace(/#(.*)$/g, '').replace('/\//g', '/');
 
-				if (checkHistoryOnChange != 1) {
-					var value = $('.swiper-slide-active').attr('data-history');
-					var url = window.location.origin + '/' + value + '/';
-					history.pushState({ value: value }, null, url);
-				};
+		// If body has class paged load next/prev posts based on the current page number
+		if ($('body').hasClass('paged')) {
+			currentPageNext = parseInt(pathname.replace(/[^0-9]/gi, ''));
+			currentPagePrev = parseInt(pathname.replace(/[^0-9]/gi, ''));
+		};
 
-				checkHistoryOnChange = 0;
-			});
+		if (typeof maxPages === 'undefined' || maxPages === null) {
+			maxPages = 0;
+		};
 
-			pathname = pathname.replace(/#(.*)$/g, '').replace('/\//g', '/');
+		// If body has class tag-template filter by current tag
+		if ($('body').hasClass('tag-template')) {
+			filter = "tag:" + $('.tag-title').attr('data-tag');
+		};
 
-			// If body has class paged load next/prev posts based on the current page number
-			if ($('body').hasClass('paged')) {
-				currentPageNext = parseInt(pathname.replace(/[^0-9]/gi, ''));
-				currentPagePrev = parseInt(pathname.replace(/[^0-9]/gi, ''));
-			};
+		// If body has class author-template filter by current author
+		if ($('body').hasClass('author-template')) {
+			filter = "author:" + $('.author').attr('data-author');
+		};
 
-			if (typeof maxPages === 'undefined' || maxPages === null) {
-				maxPages = 0;
-			};
+		// Fetch posts
+		ghostAPI.posts
+			.browse({limit: 'all', filter: filter, include: 'tags'})
+			.then((data) => {
 
-			// If body has class tag-template filter by current tag
-			if ($('body').hasClass('tag-template')) {
-				filter = "tag:" + $('.tag-title').attr('data-tag');
-			};
-
-			// If body has class author-template filter by current author
-			if ($('body').hasClass('author-template')) {
-				filter = "author:" + $('.author').attr('data-author');
-			};
-
-			// Fetch posts
-			$.get(ghost.url.api('posts', {limit: "all", filter: filter})).done(function (data){
-
-				allPosts = data.posts;
-				countAllPosts = data.posts.length;
+				allPosts = data;
+				countAllPosts = data.length;
 				maxPages = countAllPosts;
 
 				// Create pagination number
-				$.each(data.posts, function(index, val) {
+				$.each(data, function(index, val) {
 					if (val.id == firstPostId) {
 						firstPostIndex = index+1;
 						$('.pagination-number').append('<b>'+ firstPostIndex +'</b>/' + countAllPosts);
@@ -147,9 +156,10 @@ jQuery(document).ready(function($) {
 					};
 				});
 
-			});
-
-		};
+		})
+		.catch((err) => {
+			console.error(err);
+		});
 
 	});
 
@@ -168,53 +178,62 @@ jQuery(document).ready(function($) {
 		});
     }
 
-    // Initialize ghostHunter - A Ghost blog search engine
-    var searchField = $("#search-field").ghostHunter({
-        results             : "#results",
-        onKeyUp             : true,
-        zeroResultsInfo     : true,
-        displaySearchInfo   : false,
-        onComplete      : function( results ){
+    var ghostSearch = new GhostSearch({
+        host: config['content-api-host'],
+        key: config['content-api-key'],
+        input: '#search-field',
+        results: '#results',
+        api: {
+            parameters: { 
+                fields: ['title', 'slug', 'published_at', 'primary_tag', 'id'],
+                include: 'tags',
+            },
+        },
+        on: {
+            afterDisplay: function(results){
 
-        	$('#results').empty();
+                $('#results').empty();
+                
+                var tags = [];
+                $.each(results, function(index, val) {
+                    if (val.obj.primary_tag) {
+                        if ($.inArray(val.obj.primary_tag.name, tags) === -1) {
+                            tags.push(val.obj.primary_tag.name);
+                        };
+                    }else{
+                        if ($.inArray('Other', tags) === -1) {
+                            tags.push('Other');
+                        };
+                    };
+                });
 
-        	var tags = [];
-        	$.each(results, function(index, val) {
-        		if (val.tags.length) {
-        			if ($.inArray(val.tags[0].name, tags) === -1) {
-        				tags.push(val.tags[0].name);
-        			};
-        		}else{
-        			if ($.inArray('Other', tags) === -1) {
-        				tags.push('Other');
-        			};
-        		};
-        	});
-        	tags.sort();
+                tags.sort();
 
-        	$.each(tags, function(index, val) {
-        		var tag = val;
-        		if (val == 'Other') {
-        			tag = $('#results').attr('data-other');
-        		};
-        		$('#results').append('<h5>'+ tag +'</h5><ul data-tag="'+ val +'" class="list-box"</ul>');
-        	});
+                $.each(tags, function(index, val) {
+                    var tag = val;
+                    if (val == 'Other') {
+                        tag = $('#results').attr('data-other');
+                    };
+                    $('#results').append('<h5>'+ tag +'</h5><ul data-tag="'+ val +'" class="list-box"></ul>');
+                });
 
-        	$.each(results, function(index, val) {
-                var dateSplit = val.pubDate.split(' ')
-                var month = monthNames.indexOf(dateSplit[1])+1;
-                var date = moment(dateSplit[0]+'-'+month+'-'+dateSplit[2], "DD-MM-YYYY").format('DD MMM YYYY');
-        		if (val.tags.length) {
-	        		$('#results ul[data-tag="'+ val.tags[0].name +'"]').append('<li><time>'+ date +'</time><a href="#" class="read-later" data-id="'+ val.id +'"></a><a href="'+ val.link +'">'+ val.title +'</a></li>');
-        		}else{
-        			$('#results ul[data-tag="Other"]').append('<li><a href="#" class="read-later" data-id="'+ val.id +'"></a><time>'+ date +'</time><a href="'+ val.link +'">'+ val.title +'</a></li>');
-        		};
-        	});
+                $.each(results, function(index, val) {
+                    var dateSplit = val.obj.published_at.split('T');
+                    dateSplit = dateSplit[0].split('-');
+                    var month = monthNames[dateSplit[1]-1];
+                    var date = moment(dateSplit[2]+'-'+month+'-'+dateSplit[1], "DD-MM-YYYY").format('DD MMM YYYY');
+                    if (val.obj.primary_tag) {
+                        $('#results ul[data-tag="'+ val.obj.primary_tag.name +'"]').append('<li><time>'+ date +'</time><a href="#" class="read-later" data-id="'+ val.obj.id +'"></a><a href="'+ val.obj.slug +'">'+ val.obj.title +'</a></li>');
+                    }else{
+                        $('#results ul[data-tag="Other"]').append('<li><a href="#" class="read-later" data-id="'+ val.obj.id +'"></a><time>'+ date +'</time><a href="'+ val.obj.slug +'">'+ val.obj.title +'</a></li>');
+                    };
+                });
 
-        	readLaterPosts = readLater($('#results'), readLaterPosts);
+                readLaterPosts = readLater($('#results'), readLaterPosts);
 
+            },
         }
-    });
+    })
 
 	$('#search').on('shown.bs.modal', function (e) {
 		$('#search-field').focus();
@@ -248,7 +267,7 @@ jQuery(document).ready(function($) {
     });
 
     // On back/forward click change slide
-	if (window.history && window.history.pushState && typeof ghost !== 'undefined') {
+	if (window.history && window.history.pushState) {
 		$(window).on('popstate', function() {
 			checkHistoryOnChange = 1;
 			var check = 0;
@@ -346,66 +365,74 @@ jQuery(document).ready(function($) {
 			var filter = readLaterPosts.toString();
 			filter = "id:["+filter+"]";
 
-			$.get(ghost.url.api('posts', {filter:filter, include:"tags"})).done(function (data){
-				$('.bookmark-container').empty();
-				var tags = [];
-	        	$.each(data.posts, function(index, val) {
-	        		if (val.tags.length) {
-	        			if ($.inArray(val.tags[0].name, tags) === -1) {
-	        				tags.push(val.tags[0].name);
-	        			};
-	        		}else{
-	        			if ($.inArray('Other', tags) === -1) {
-	        				tags.push('Other');
-	        			};
-	        		};
-	        	});
-	        	tags.sort();
+            ghostAPI.posts
+                .browse({limit: 'all', filter: filter, include: 'tags'})
+                .then((results) => {
 
-	        	$.each(tags, function(index, val) {
-	        		var tag = val;
-	        		if (val == 'Other') {
-	        			tag = $('#results').attr('data-other');
-	        		};
-	        		$('.bookmark-container').append('<h5>'+ tag +'</h5><ul data-tag="'+ val +'" class="list-box"</ul>');
-	        	});
+                    $('.bookmark-container').empty();
 
-	        	$.each(data.posts, function(index, val) {
-                    var dateSplit = prettyDate(val.published_at).split(' ')
-                    var month = monthNames.indexOf(dateSplit[1])+1;
-                    var date = moment(dateSplit[0]+'-'+month+'-'+dateSplit[2], "DD-MM-YYYY").format('DD MMM YYYY');
-	        		if (val.tags.length) {
-		        		$('.bookmark-container ul[data-tag="'+ val.tags[0].name +'"]').append('<li><time>'+ date +'</time><a href="#" class="read-later active" data-id="'+ val.id +'"></a><a href="/'+ val.slug +'">'+ val.title +'</a></li>');
-	        		}else{
-	        			$('.bookmark-container ul[data-tag="Other"]').append('<li><a href="#" class="read-later active" data-id="'+ val.id +'"></a><time>'+ date +'</time><a href="/'+ val.slug +'">'+ val.title +'</a></li>');
-	        		};
-	        	});
+                    var tags = [];
+                    $.each(results, function(index, val) {
+                        if (val.primary_tag) {
+                            if ($.inArray(val.primary_tag.name, tags) === -1) {
+                                tags.push(val.primary_tag.name);
+                            };
+                        }else{
+                            if ($.inArray('Other', tags) === -1) {
+                                tags.push('Other');
+                            };
+                        };
+                    });
+    
+                    tags.sort();
 
-    			$('.bookmark-container').find('.read-later').each(function(index, el) {
-					$(this).on('click', function(event) {
-						event.preventDefault();
-						var id = $(this).attr('data-id');
-						if ($(this).hasClass('active')) {
-							removeValue(readLaterPosts, id);
-						}else{
-							readLaterPosts.push(id);
-						};
-						$('.read-later[data-id="'+ id +'"]').each(function(index, el) {
-							$(this).toggleClass('active');
-						});
-						Cookies.set('zvikov-read-later', readLaterPosts, { expires: 365 });
-						bookmarks(readLaterPosts);
+                    $.each(tags, function(index, val) {
+                        var tag = val;
+                        if (val == 'Other') {
+                            tag = $('.bookmark-container').attr('data-other');
+                        };
+                        $('.bookmark-container').append('<h5>'+ tag +'</h5><ul data-tag="'+ val +'" class="list-box"></ul>');
 					});
-				});
+					
+                    $.each(results, function(index, val) {
+                        var dateSplit = val.published_at.split('T');
+                        dateSplit = dateSplit[0].split('-');
+                        var month = monthNames[dateSplit[1]-1];
+                        var date = moment(dateSplit[2]+'-'+month+'-'+dateSplit[1], "DD-MM-YYYY").format('DD MMM YYYY');
+                        if (val.primary_tag) {
+                            $('.bookmark-container ul[data-tag="'+ val.primary_tag.name +'"]').append('<li><time>'+ date +'</time><a href="#" class="read-later active" data-id="'+ val.id +'"></a><a href="'+ val.slug +'">'+ val.title +'</a></li>');
+                        }else{
+                            $('.bookmark-container ul[data-tag="Other"]').append('<li><a href="#" class="read-later active" data-id="'+ val.id +'"></a><time>'+ date +'</time><a href="'+ val.slug +'">'+ val.title +'</a></li>');
+                        };
+                    });
 
-				if (data.posts.length) {
-					$('header .counter').removeClass('hidden').text(data.posts.length);
-				}else{
-					$('header .counter').addClass('hidden');
-                    $('.bookmark-container').append('<p class="no-bookmarks"></p>');
-                    $('.no-bookmarks').html(noBookmarksMessage)
-				};
+                    $('.bookmark-container').find('.read-later').each(function(index, el) {
+                        $(this).on('click', function(event) {
+                            event.preventDefault();
+                            var id = $(this).attr('data-id');
+                            if ($(this).hasClass('active')) {
+                                removeValue(readLaterPosts, id);
+                            }else{
+                                readLaterPosts.push(id);
+                            };
+                            $('.read-later[data-id="'+ id +'"]').each(function(index, el) {
+                                $(this).toggleClass('active');
+                            });
+                            Cookies.set('zvikov-read-later', readLaterPosts, { expires: 365 });
+                            bookmarks(readLaterPosts);
+                        });
+                    });
 
+                    if (results) {
+                        $('header .counter').removeClass('hidden').text(results.length);
+                    }else{
+                        $('header .counter').addClass('hidden');
+                        $('.bookmark-container').append('<p class="no-bookmarks"></p>');
+                        $('.no-bookmarks').html(noBookmarksMessage)
+                    };
+			})
+			.catch((err) => {
+				console.error(err);
 			});
 		}else{
 			$('header .counter').addClass('hidden');
